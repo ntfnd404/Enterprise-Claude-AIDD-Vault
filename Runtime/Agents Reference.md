@@ -2,14 +2,15 @@
 
 ## Обзор
 
-AIDD использует 7 специализированных агентов. Каждый имеет определённые входные данные, выходные артефакты и ответственность за гейт.
+AIDD использует 8 специализированных агентов. Каждый имеет определённые входные данные, выходные артефакты и ответственность за гейт.
 
 ## Таблица агентов
 
 | Агент | Читает | Пишет | Гейт |
 |---|---|---|---|
 | **analyst** | idea | PRD | `IDEA_READY` -> `PRD_READY` |
-| **researcher** | idea, PRD, кодовую базу | research, vision | `PRD_READY` -> `RESEARCH_DONE` |
+| **spec-critic** | PRD (свежий) | critique-артефакт | `PRD_READY` -> `SPEC_CRITIQUED` |
+| **researcher** | idea, PRD, кодовую базу | research, vision | `SPEC_CRITIQUED` -> `RESEARCH_DONE` |
 | **planner** | vision, PRD, research | plan, brief, tasklist | `RESEARCH_DONE` -> `PLAN_APPROVED` |
 | **implementer** | brief, plan, PRD, conventions | исходный код, phase, tasklist | `TASKLIST_READY` -> `IMPLEMENT_STEP_OK` |
 | **reviewer** | diff, plan, PRD, conventions | phase summary | `IMPLEMENT_STEP_OK` -> `REVIEW_OK` |
@@ -41,7 +42,39 @@ AIDD использует 7 специализированных агентов.
 - Не пишет код
 - Помечает блокирующие вопросы как `Open Questions`
 
+**Раунд уточнений (Clarification round, Workflow Minor 3.2):**
+До выпуска PRD аналитик ОБЯЗАН задать 3-5 уточняющих вопросов по неоднозначностям в idea и дождаться ответов владельца тикета. Вопросы и ответы фиксируются в секции `## Clarification round` PRD. Если у аналитика честно нет вопросов, он вставляет стаб-секцию `### Considered and rejected` с минимум 3 рассмотренными и отвергнутыми неоднозначностями (с обоснованием, почему вопрос не задан). PRD без одной из этих секций не проходит валидацию. Полное определение роли -- в `.claude/agents/analyst.md`.
+
 **Гейт:** `IDEA_READY` -> `PRD_READY`
+
+### spec-critic
+
+**Роль:** Независимый постPRD-критик. Запускается после того, как analyst выпустил PRD, и до того, как researcher начал работу. Не правит PRD и не пишет код -- только производит письменную критику. Цель -- поймать неоднозначности, пропущенные ограничения и недоопределённые сценарии до того, как они утекут в research/plan/impl.
+
+**Входные данные:**
+
+| Файл | Назначение |
+|---|---|
+| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Единственный вход. Critic не читает idea, vision, кодовую базу -- только PRD. |
+
+**Выходные артефакты:**
+
+| Артефакт | Путь |
+|---|---|
+| Critique | `docs/<TICKET>/critique/<TICKET>-phase-<N>-critique.md` |
+
+**Правила:**
+- Минимум 3 наблюдения (findings), каждое с категорией: `AMBIGUITY` / `MISSING_CONSTRAINT` / `UNDERDEFINED_SCENARIO` / `RISK_GAP`
+- Каждое наблюдение указывает на конкретное место PRD (заголовок секции / строка таблицы)
+- Вердикт: `SPEC_CRITIQUED` (PRD пригоден к research после фикса блокирующих findings) или `SPEC_BLOCKED` (analyst обязан переработать PRD и запустить critic повторно)
+- Не предлагает реализационных решений -- только формулирует, что в PRD непонятно или отсутствует
+- Не модифицирует PRD сам; analyst по итогам ревизит PRD и сам флипает Status в `SPEC_CRITIQUED`
+
+**Tool envelope:** `Read, Glob, Grep, Write` -- без `Bash` и без `Edit`. Critic не запускает скрипты и не правит чужие файлы.
+
+**Инвокация:** Claude Code harness не auto-регистрирует кастомных агентов из `.claude/agents/`. Spec-critic вызывается через `general-purpose` subagent с briefing'ом роли, загружаемым из `.claude/agents/spec-critic.md`. Соответствующая команда -- `/aidd-spec-critique` (если определена) либо явная делегация с указанием PRD-пути.
+
+**Гейт:** `PRD_READY` -> `SPEC_CRITIQUED`
 
 ### researcher
 
@@ -68,7 +101,9 @@ AIDD использует 7 специализированных агентов.
 - Помечает риски с оценкой влияния и рекомендацией
 - Ссылается на конкретные пути файлов и номера строк
 
-**Гейт:** `PRD_READY` -> `RESEARCH_DONE` / `VISION_APPROVED`
+**Гейт:** `SPEC_CRITIQUED` -> `RESEARCH_DONE` / `VISION_APPROVED`
+
+Researcher ОБЯЗАН отказаться потреблять PRD, если его Status всё ещё `PRD_READY` (critic не запускался).
 
 ### planner
 
@@ -246,6 +281,9 @@ idea
 [analyst] --> PRD
   |
   v
+[spec-critic] --> critique  (PRD_READY -> SPEC_CRITIQUED)
+  |
+  v
 [researcher] --> research, vision
   |
   v
@@ -289,6 +327,7 @@ tools: Read, Write, Edit, Glob, Grep, Bash
 | Агент | Инструменты | Обоснование |
 |---|---|---|
 | analyst | Read, Glob, Grep, Write | Без Bash, без Edit -- только чтение и создание артефактов |
+| spec-critic | Read, Glob, Grep, Write | Без Bash, без Edit -- читает только PRD, пишет critique |
 | researcher | Read, Glob, Grep, Bash, Write | Bash нужен для исследования кодовой базы |
 | planner | Read, Glob, Grep, Write | Без Bash, без Edit -- проектирование, не реализация |
 | implementer | Read, Write, Edit, Glob, Grep, Bash | Полный набор инструментов -- единственная роль с правом записи кода |
@@ -320,6 +359,7 @@ tools: Read, Write, Edit, Glob, Grep, Bash
 | Агент | Lite | Standard | Enterprise |
 |---|---|---|---|
 | analyst | Да | Да | Да |
+| spec-critic | Нет | Да | Да |
 | researcher | Нет (включён в planner) | Да | Да |
 | planner | Да | Да | Да |
 | implementer | Да | Да | Да |
