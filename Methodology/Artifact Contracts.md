@@ -96,6 +96,18 @@ Owner: <role name>
 ### Security Review
 Пишите только релевантное для безопасности: риск утечки, границы секретов/ключей, понижение авторизации, безопасность хранилища/сети.
 
+## Discovery
+
+`discovery` — опциональный артефакт. Создаётся только если во время Clarification round или ранее на этапе исследования рассматривались и были отвергнуты альтернативы. Автор — `analyst`. Расположение: `docs/<TICKET>/discovery/<TICKET>-phase-<N>-discovery.md`. PRD ссылается на discovery из секции `## Alternatives`, когда тот существует. Тикеты, начатые до v3.2, не нуждаются в ретроактивном добавлении discovery.
+
+Шаблон: `Templates/Artifacts/discovery.md`.
+
+## Vision и Roadmap
+
+`vision.md` и `roadmap.md` живут в репозитории проекта по путям `docs/project/vision.md` и `docs/project/roadmap.md`. Это persistent project documents (не ticket-local). `vision` фиксирует «что это за проект и почему», `roadmap` — текущее состояние тикетов (completed / in-flight / planned / deferred). Оба пересматриваются периодически; поле `Last reviewed: YYYY-MM-DD` обязательно.
+
+Шаблоны: `Templates/Project Docs/vision.md` и `Templates/Project Docs/roadmap.md` (пустые scaffolds, английские, чтобы проект мог скопировать в свой репо без перевода).
+
 ## Структура рабочего пространства фичи
 
 ```
@@ -106,7 +118,7 @@ docs/<TICKET>/
 ├── tasklist-<TICKET>.md
 ├── metrics.log
 ├── <TICKET>-phase-N-summary.md
-├── phase/<TICKET>/phase-N.md
+├── phase/phase-N.md
 ├── plan/<TICKET>-phase-N.md
 ├── prd/<TICKET>-phase-N.prd.md
 ├── research/<TICKET>-phase-N.md
