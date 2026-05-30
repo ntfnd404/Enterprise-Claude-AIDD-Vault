@@ -1,5 +1,7 @@
 # Phase Flow Professional
 
+> **Workflow Minor: 3.2** — пример отражает поток v3.2 (Clarification round, spec-critic gate, Verifiable AC, docs-sync). Для коротких правок без архитектурного влияния см. [[Phase Flow Trivial]] и [[../Methodology/Lanes]].
+
 ## Сценарий
 
 Фича: `PROJ-0001` -- добавление экрана настроек приложения.
@@ -24,6 +26,10 @@
 
 Скилл запускает маршрутизацию через подготовительных агентов.
 
+### Шаг 1a: Clarification round (analyst)
+
+До формирования PRD агент analyst проводит раунд уточнений — 3-5 нумерованных вопросов к пользователю (формат + правила отказа описаны в [[../Runtime/Agents Reference#Analyst]]). Ответы фиксируются в секции `## Clarification round` PRD как пронумерованные Q/A пары. Минимум 3 пары — обязательное требование валидатора при `Workflow Minor: 3.2`.
+
 ### Шаг 2: Analyst создает PRD
 
 Агент analyst читает идею и создает `docs/PROJ-0001/prd/PROJ-0001-phase-2.prd.md`:
@@ -32,8 +38,19 @@
 - **Позитивный сценарий**: пользователь переключает тему -- приложение перезагружается в новой теме
 - **Негативный сценарий**: хранилище недоступно -- показывается сообщение об ошибке
 - **Метрика успеха**: все настройки сохраняются и восстанавливаются между сессиями
+- **Verifiable AC**: каждая ячейка `Success Metrics → Verification` начинается с префикса `test:` / `command:` / `manual:` (правило формата описано в шаблоне `phase_prd.md` и проверяется валидатором).
 
-Статус фазы: `PRD_APPROVED`.
+Статус фазы: `PRD_READY`.
+
+### Шаг 2a: Spec-critic gate
+
+Агент spec-critic читает только PRD (ни discovery, ни кода, ни research) и пишет критику в `docs/PROJ-0001/critique/PROJ-0001-phase-2-critique.md`:
+
+- Минимум 3 наблюдения с числовыми ID `F1`, `F2`, `F3`, …
+- Вердикт: `SPEC_CRITIQUED` (можно идти дальше) или `SPEC_BLOCKED` (требуется ревизия PRD).
+- При `SPEC_BLOCKED` analyst исправляет Blocking-находки, spec-critic перезапускается; артефакт критики дописывается, не перезаписывается. Бюджет — два цикла ревизии до эскалации.
+
+После чистого прохода статус PRD флипается `PRD_READY` → `SPEC_CRITIQUED`. Только тогда researcher получает право читать кодовую базу.
 
 ### Шаг 3: Researcher собирает контекст
 
@@ -138,6 +155,8 @@ Implementer предлагает батч:
 
 ### Шаг 8: Завершение фазы
 
+Перед запуском `/aidd-complete-phase` проходит чек-лист закрытия (см. [[../Checklists/Complete Phase Professional]]), в том числе пункт **Docs sync**: «Изменилось ли поведение, описанное в `docs/project/`? Если да — обновлено ли `docs/project/` в этом же PR?». Вердикт `yes` / `no` / `N-A` фиксируется в phase summary.
+
 Пользователь вводит:
 
 ```text
@@ -167,10 +186,12 @@ Implementer останавливается, если:
 ## Полная цепочка гейтов
 
 ```
-IDEA_READY → PRD_APPROVED → RESEARCH_DONE → VISION_SET →
+IDEA_READY → PRD_READY → SPEC_CRITIQUED → RESEARCH_DONE → VISION_SET →
 PLAN_APPROVED → TASKLIST_READY → IMPLEMENT_STEP_OK →
 REVIEW_OK → QA_PASS → PHASE_DONE
 ```
+
+Гейт `SPEC_CRITIQUED` обязателен для всех фаз при `Workflow Minor: 3.2` (исключение — bootstrap-карвоут, описанный в `Methodology/Overview.md`).
 
 ## Ссылки
 

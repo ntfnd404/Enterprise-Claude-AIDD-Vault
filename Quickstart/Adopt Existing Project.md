@@ -2,7 +2,20 @@
 
 ## Цель
 
-Добавить AIDD v3 в существующую кодовую базу с минимальным вмешательством.
+Добавить AIDD v3.2 в существующую кодовую базу с минимальным вмешательством.
+
+## v3.2: апгрейд существующего проекта
+
+Если в проекте уже стоит AIDD v3.0/v3.1, выполните перед основным аудитом:
+
+1. Поднимите `Workflow Minor` до `3.2` в шапке проектного `CLAUDE.md` (поле `Workflow Version` остаётся `3`).
+2. Добавьте `Workflow Minor: 3.2` в шапки уже существующих шаблонов под `docs/project/templates/` (idea, vision, phase_brief, phase_plan, phase_prd, phase_qa, phase_research, phase_security_review, phase_summary, tasklist, adr).
+3. Создайте `docs/project/vision.md` и `docs/project/roadmap.md` из vault scaffolds (`Templates/Project Docs/vision.md`, `Templates/Project Docs/roadmap.md`), если их ещё нет.
+4. Скопируйте `Templates/Artifacts/discovery.md` в `docs/project/templates/discovery.md`, если ранее этот шаблон в проекте отсутствовал.
+5. Включите вызов spec-critic в существующий analyst-флоу: после написания PRD/Plan analyst запускает spec-critic как sub-agent и фиксирует findings в QA-артефакте фазы.
+6. Обновите `aidd_validate.sh` тремя новыми проверками: `check_verifiable_ac`, `check_spec_critique`, `check_clarification_round`. Скрипт должен фейлиться, если фаза не содержит spec-critique-секции или verifiable AC-чеклиста.
+7. Зафиксируйте принятие Trivial-полосы: в `CLAUDE.md` проекта продублируйте entry criteria из `[[../Methodology/Lanes]]`; коммиты по Trivial обязаны нести префикс `trivial:` либо ссылку на issue.
+8. Сделайте Discovery опциональным артефактом: при наличии альтернатив используйте `docs/project/templates/discovery.md` (мирорится из `[[../Templates/Artifacts/discovery]]`).
 
 ## Шаг 0: Установка seed-скилла
 

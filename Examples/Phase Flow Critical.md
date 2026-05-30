@@ -1,5 +1,7 @@
 # Phase Flow Critical
 
+> **Workflow Minor: 3.2** — Critical-полоса включает обязательную цепочку гейтов `analyst` → `spec-critic` → `researcher` → `planner` → `implementer` → `reviewer` → `security-reviewer` → `qa`. См. также [[../Methodology/Lanes]] и [[../Checklists/Complete Phase Critical]].
+
 ## Сценарий
 
 Фича: `PROJ-0003` -- добавление шифрования локального хранилища приватных ключей.
@@ -35,6 +37,10 @@
 /aidd-start-phase 1
 ```
 
+### Шаг 1a: Clarification round (analyst)
+
+Перед PRD analyst задаёт 3-5 нумерованных вопросов (формат — в [[../Runtime/Agents Reference#Analyst]]). Ответы сохраняются в `## Clarification round` PRD. На Critical-полосе уточнения особенно важны: они проявляют скрытые предположения безопасности до того, как spec-critic превратит их в Blocking-находку.
+
 ### Шаг 2: Analyst создает PRD
 
 Агент analyst создает `docs/PROJ-0003/prd/PROJ-0003-phase-1.prd.md`:
@@ -44,8 +50,20 @@
 - **Негативный сценарий**: неверный пароль -- расшифровка отклонена с понятной ошибкой
 - **Ограничение безопасности**: ключи не должны появляться в логах, памяти дольше необходимого, в stack traces
 - **Метрика успеха**: все ключи зашифрованы AES-256-GCM, миграция прозрачна для пользователя
+- **Verifiable AC**: каждая ячейка `Success Metrics → Verification` начинается с префикса `test:` / `command:` / `manual:` (проверяется валидатором `check_verifiable_ac`).
 
-Статус: `PRD_APPROVED`.
+Статус: `PRD_READY`.
+
+### Шаг 2a: Spec-critic gate
+
+Агент spec-critic читает только PRD и пишет критику в `docs/PROJ-0003/critique/PROJ-0003-phase-1-critique.md`:
+
+- Минимум 3 наблюдения с числовыми ID `F1`, `F2`, ….
+- Вердикт `SPEC_CRITIQUED` или `SPEC_BLOCKED`.
+- На Critical-полосе критика особенно ищет противоречия в Security Constraints, нечётко сформулированные negative scenarios, отсутствующие предположения безопасности. Bootstrap-исключения для Critical-фаз нет.
+- При `SPEC_BLOCKED` analyst исправляет Blocking-находки, цикл повторяется (бюджет 2 ревизии).
+
+После чистого прохода статус PRD флипается `PRD_READY` → `SPEC_CRITIQUED`. Только после этого researcher начинает изучать кодовую базу.
 
 ### Шаг 3: Researcher собирает контекст
 
@@ -179,6 +197,8 @@ Implementer предлагает:
 
 ### Шаг 9: Завершение фазы
 
+Перед `/aidd-complete-phase` проходит чек-лист [[../Checklists/Complete Phase Critical]], включая пункт **Docs sync**: «Изменилось ли поведение, описанное в `docs/project/`? Если да — обновлено ли `docs/project/` в этом же PR?». Вердикт `yes` / `no` / `N-A` фиксируется в phase summary.
+
 Пользователь вводит:
 
 ```text
@@ -200,12 +220,12 @@ Implementer предлагает:
 ## Полная цепочка гейтов Critical
 
 ```
-IDEA_READY → PRD_APPROVED → RESEARCH_DONE → VISION_SET →
+IDEA_READY → PRD_READY → SPEC_CRITIQUED → RESEARCH_DONE → VISION_SET →
 PLAN_APPROVED → TASKLIST_READY → IMPLEMENT_STEP_OK →
 REVIEW_OK → SECURITY_REVIEW_OK → QA_PASS → PHASE_DONE
 ```
 
-Обратите внимание на дополнительный гейт `SECURITY_REVIEW_OK` между `REVIEW_OK` и `QA_PASS`.
+Critical-фазы проходят полный конвейер агентов: `analyst` → `spec-critic` → `researcher` → `planner` → `implementer` → `reviewer` → `security-reviewer` → `qa`. Обратите внимание на гейт `SPEC_CRITIQUED` перед research и дополнительный `SECURITY_REVIEW_OK` между `REVIEW_OK` и `QA_PASS`.
 
 ## Ссылки
 

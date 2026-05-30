@@ -2,7 +2,17 @@
 
 ## Цель
 
-Полная настройка рантайма AIDD v3 в новом проекте с нуля.
+Полная настройка рантайма AIDD v3.2 в новом проекте с нуля.
+
+## v3.2: что обязательно учесть при бутстрапе
+
+1. В шапке проектного `CLAUDE.md` укажите `Workflow Minor: 3.2` (поле `Workflow Version` остаётся `3`).
+2. Скопируйте scaffold-документы из vault в корень нового проекта:
+   - `Templates/Project Docs/CLAUDE.md` → `<project_root>/CLAUDE.md`
+   - `Templates/Project Docs/vision.md` → `docs/project/vision.md`
+   - `Templates/Project Docs/roadmap.md` → `docs/project/roadmap.md`
+3. В разделе lanes проектного `CLAUDE.md` перечислите все три полосы: `Trivial / Professional / Critical`. Trivial — короткий путь `edit → review` для опечаток, переименований и точечных конфигов; коммит обязан нести префикс `trivial:` либо ссылку на issue.
+4. Discovery-шаблон опционален: копируйте `Templates/Artifacts/discovery.md` в проект только если фича стартует с фазы Discovery.
 
 ## Предварительные требования
 

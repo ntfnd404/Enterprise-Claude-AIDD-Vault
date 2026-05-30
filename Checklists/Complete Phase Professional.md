@@ -17,6 +17,10 @@
 - [ ] QA вызван ([[Methodology/Roles And Gates#QA]])
 - [ ] Гейт `QA_PASS` пройден
 
+## Docs sync
+
+- [ ] Изменилось ли поведение, описанное в `docs/project/` (conventions, code-style, architecture, workflow, guidelines, ADR)? Если да — соответствующий файл `docs/project/` обновлён в этом же PR. (yes / no / N-A — зафиксировать в phase summary.)
+
 ## Закрытие фазы
 
 - [ ] Summary создан (`<TICKET>-phase-N-summary.md`)
