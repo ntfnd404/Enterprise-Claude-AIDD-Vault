@@ -6,7 +6,7 @@
 
 ## v3.2: что обязательно учесть при бутстрапе
 
-1. В шапке проектного `CLAUDE.md` укажите `Workflow Minor: 3.2` (поле `Workflow Version` остаётся `3`).
+1. В шапке проектного `CLAUDE.md` укажите `Workflow Minor: 3.3` (поле `Workflow Version` остаётся `3`).
 2. Скопируйте scaffold-документы из vault в корень нового проекта:
    - `Templates/Project Docs/CLAUDE.md` → `<project_root>/CLAUDE.md`
    - `Templates/Project Docs/vision.md` → `docs/project/vision.md`

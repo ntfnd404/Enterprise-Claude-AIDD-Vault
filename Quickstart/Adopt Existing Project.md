@@ -9,7 +9,7 @@
 Если в проекте уже стоит AIDD v3.0/v3.1, выполните перед основным аудитом:
 
 1. Поднимите `Workflow Minor` до `3.2` в шапке проектного `CLAUDE.md` (поле `Workflow Version` остаётся `3`).
-2. Добавьте `Workflow Minor: 3.2` в шапки уже существующих шаблонов под `docs/project/templates/` (idea, vision, phase_brief, phase_plan, phase_prd, phase_qa, phase_research, phase_security_review, phase_summary, tasklist, adr).
+2. Добавьте `Workflow Minor: 3.3` в шапки уже существующих шаблонов под `docs/project/templates/` (idea, vision, phase_brief, phase_plan, phase_prd, phase_qa, phase_research, phase_security_review, phase_summary, tasklist, adr).
 3. Создайте `docs/project/vision.md` и `docs/project/roadmap.md` из vault scaffolds (`Templates/Project Docs/vision.md`, `Templates/Project Docs/roadmap.md`), если их ещё нет.
 4. Скопируйте `Templates/Artifacts/discovery.md` в `docs/project/templates/discovery.md`, если ранее этот шаблон в проекте отсутствовал.
 5. Включите вызов spec-critic в существующий analyst-флоу: после написания PRD/Plan analyst запускает spec-critic как sub-agent и фиксирует findings в QA-артефакте фазы.

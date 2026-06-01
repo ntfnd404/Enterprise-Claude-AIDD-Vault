@@ -20,7 +20,7 @@
 ## Runtime defaults
 
 - Workflow Version: 3
-- Workflow Minor: 3.2
+- Workflow Minor: 3.3
 - Default lane: `Professional`
 - Mandatory `Critical` lane for: <!-- list project-specific risk domains, e.g. auth, crypto, secrets, storage migrations, API contracts -->
 - `Trivial` lane available — see canonical definition in vault `Methodology/Lanes.md`.

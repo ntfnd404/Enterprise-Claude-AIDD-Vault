@@ -1,6 +1,6 @@
 # Phase Flow Professional
 
-> **Workflow Minor: 3.2** — пример отражает поток v3.2 (Clarification round, spec-critic gate, Verifiable AC, docs-sync). Для коротких правок без архитектурного влияния см. [[Phase Flow Trivial]] и [[../Methodology/Lanes]].
+> **Workflow Minor: 3.3** — пример отражает поток v3.2 (Clarification round, spec-critic gate, Verifiable AC, docs-sync). Для коротких правок без архитектурного влияния см. [[Phase Flow Trivial]] и [[../Methodology/Lanes]].
 
 ## Сценарий
 
@@ -28,7 +28,7 @@
 
 ### Шаг 1a: Clarification round (analyst)
 
-До формирования PRD агент analyst проводит раунд уточнений — 3-5 нумерованных вопросов к пользователю (формат + правила отказа описаны в [[../Runtime/Agents Reference#Analyst]]). Ответы фиксируются в секции `## Clarification round` PRD как пронумерованные Q/A пары. Минимум 3 пары — обязательное требование валидатора при `Workflow Minor: 3.2`.
+До формирования PRD агент analyst проводит раунд уточнений — 3-5 нумерованных вопросов к пользователю (формат + правила отказа описаны в [[../Runtime/Agents Reference#Analyst]]). Ответы фиксируются в секции `## Clarification round` PRD как пронумерованные Q/A пары. Минимум 3 пары — обязательное требование валидатора при `Workflow Minor: 3.3`.
 
 ### Шаг 2: Analyst создает PRD
 
@@ -191,7 +191,7 @@ PLAN_APPROVED → TASKLIST_READY → IMPLEMENT_STEP_OK →
 REVIEW_OK → QA_PASS → PHASE_DONE
 ```
 
-Гейт `SPEC_CRITIQUED` обязателен для всех фаз при `Workflow Minor: 3.2` (исключение — bootstrap-карвоут, описанный в `Methodology/Overview.md`).
+Гейт `SPEC_CRITIQUED` обязателен для всех фаз при `Workflow Minor: 3.3` (исключение — bootstrap-карвоут, описанный в `Methodology/Overview.md`).
 
 ## Ссылки
 

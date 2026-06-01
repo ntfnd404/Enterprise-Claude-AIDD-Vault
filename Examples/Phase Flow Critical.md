@@ -1,6 +1,6 @@
 # Phase Flow Critical
 
-> **Workflow Minor: 3.2** — Critical-полоса включает обязательную цепочку гейтов `analyst` → `spec-critic` → `researcher` → `planner` → `implementer` → `reviewer` → `security-reviewer` → `qa`. См. также [[../Methodology/Lanes]] и [[../Checklists/Complete Phase Critical]].
+> **Workflow Minor: 3.3** — Critical-полоса включает обязательную цепочку гейтов `analyst` → `spec-critic` → `researcher` → `planner` → `implementer` → `reviewer` → `security-reviewer` → `qa`. См. также [[../Methodology/Lanes]] и [[../Checklists/Complete Phase Critical]].
 
 ## Сценарий
 

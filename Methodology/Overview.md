@@ -1,6 +1,6 @@
 # Обзор рабочего процесса
 
-Workflow Minor: 3.2 (поставляется в AIDD v3.2; baseline v3.1 на теге `v3.1-baseline` в git-репозитории vault).
+Workflow Minor: 3.3 (поставляется в AIDD v3.2; baseline v3.1 на теге `v3.1-baseline` в git-репозитории vault).
 
 ## Правило содержимого vault
 
