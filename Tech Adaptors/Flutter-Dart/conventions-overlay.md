@@ -38,7 +38,7 @@ domain    → (nothing)
 
 ### Strategy over `switch` on type
 
-When a use case branches by entity type or wallet type, register a **Strategy** per type instead of `switch(entity.type)`. Each strategy declares which type it supports; the use case asks the registry.
+When a use case branches by entity type or domain type, register a **Strategy** per type instead of `switch(entity.type)`. Each strategy declares which type it supports; the use case asks the registry.
 
 ```dart
 // ❌ Closed for extension
@@ -86,7 +86,7 @@ Generating an aggregate ID is a use-case responsibility, not a repository concer
 ## State Management: BLoC Only
 
 - **BLoC only** — no Cubits (enforced by linter)
-- Events: past-tense user actions (`WalletListRequested`, `ThemeChanged`)
+- Events: past-tense user actions (`FeatureItemsRequested`, `ThemeChanged`)
 - State: hand-written immutable class with enum `status`. **Default recommendation** is `@freezed` for state classes; **project may override** to hand-written classes (no codegen) — this is a common, valid override and adapter consumers must check their project conventions before adopting freezed.
 - `abstract interface class` for interfaces; `Impl` suffix for implementations
 - **Never** store mutable state in private BLoC fields — all state in the State class
@@ -147,7 +147,7 @@ Rules:
 
 ### Action naming
 
-All concrete action classes end with `Action`, symmetric with `Bloc / Event / State`. Example: `WalletErrorOccurredAction`, `SendFailedAction`.
+All concrete action classes end with `Action`, symmetric with `Bloc / Event / State`. Example: `FeatureErrorOccurredAction`, `FeatureSendFailedAction`.
 
 ---
 
@@ -178,8 +178,8 @@ try {
 try {
   return await _doWork();
 } on KeysStorageException catch (_, stack) {
-  Error.throwWithStackTrace(const WalletStorageException(), stack);
-} on WalletException {
+  Error.throwWithStackTrace(const FeatureStorageException(), stack);
+} on FeatureException {
   rethrow;
 }
 ```
@@ -225,6 +225,28 @@ on TransactionException {
 // ✅ throwWithStackTrace — new domain exception, original stack preserved
 } catch (_, stack) {
   Error.throwWithStackTrace(const TransactionFetchException(), stack);
+}
+```
+
+### `on Exception catch` at infrastructure boundaries
+
+Use `on Exception catch` (not bare `catch`) when wrapping infrastructure calls
+to let Dart `Error` subclasses (`TypeError`, `AssertionError`, `RangeError`)
+propagate to the zone handler — these are programmer errors, not domain exceptions.
+
+```dart
+// ❌ Masks programmer errors as domain exceptions
+try {
+  return await _gateway.fetchBalance(address);
+} catch (e, stack) {
+  Error.throwWithStackTrace(const BalanceFetchException(), stack);
+}
+
+// ✅ Programmer errors propagate; Exception subclasses are caught
+try {
+  return await _gateway.fetchBalance(address);
+} on Exception catch (_, stack) {
+  Error.throwWithStackTrace(const BalanceFetchException(), stack);
 }
 ```
 
@@ -409,3 +431,34 @@ No mocktail on `final class` — only `abstract class` or `abstract interface cl
 No mocking dependencies of `*Impl` to unit-test the impl — test through interfaces
 Never commit with analyzer warnings/infos
 ```
+
+---
+
+## Navigation: Navigator 2.0
+
+Use a custom `AppRouterDelegate` that wraps `Navigator`.
+This is the only way to place feature scopes **below `MaterialApp`**
+(so `Theme`, `MediaQuery`, `Localizations` are available)
+but **above `Navigator`** (so all pushed routes share the same BLoC instances).
+
+```dart
+// AppRouterDelegate wraps Navigator with feature scopes above it
+class AppRouterDelegate extends RouterDelegate<AppRoute>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppRoute> {
+  @override
+  Widget build(BuildContext context) {
+    return FeatureScope(
+      child: AnotherScope(
+        child: Navigator(
+          key: navigatorKey,
+          pages: _buildPages(),
+          onPopPage: _onPopPage,
+        ),
+      ),
+    );
+  }
+}
+```
+
+Never wire feature scopes inside individual `Page`/`Route` widgets —
+BLoC instances will be recreated on every navigation push.

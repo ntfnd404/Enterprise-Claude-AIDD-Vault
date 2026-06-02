@@ -16,13 +16,13 @@ These rules are appended to `docs/project/code-style-guide.md` when the Flutter-
 
 | Construct | Convention | Example |
 |-----------|-----------|---------|
-| Classes / Interfaces | `UpperCamelCase` | `WalletRepository` |
-| Implementations | `UpperCamelCase` + `Impl` | `WalletRepositoryImpl` |
-| Enums | `UpperCamelCase` | `WalletStatus` |
-| Enum values | `lowerCamelCase` | `WalletStatus.loading` |
+| Classes / Interfaces | `UpperCamelCase` | `FeatureRepository` |
+| Implementations | `UpperCamelCase` + `Impl` | `FeatureRepositoryImpl` |
+| Enums | `UpperCamelCase` | `FeatureStatus` |
+| Enum values | `lowerCamelCase` | `FeatureStatus.loading` |
 | Methods / fields | `lowerCamelCase` | `generateAddress` |
-| Private members | `_lowerCamelCase` | `_walletRepository` |
-| Files | `snake_case.dart` | `wallet_repository.dart` |
+| Private members | `_lowerCamelCase` | `_featureRepository` |
+| Files | `snake_case.dart` | `feature_repository.dart` |
 | Constants | `lowerCamelCase` | `defaultTimeout` |
 
 ## Class Member Ordering
@@ -135,15 +135,15 @@ The guard is mandatory when the field is `late final` — assigning it twice thr
 
 ```dart
 // Scope: high in tree, exposes factory
-class WalletListScope extends StatefulWidget {
-  const WalletListScope({required this.child});
+class FeatureScope extends StatefulWidget {
+  const FeatureScope({required this.child});
   final Widget child;
 
-  static WalletListBloc newBloc(BuildContext context) {
+  static FeatureBloc newBloc(BuildContext context) {
     final scope = context
-        .getInheritedWidgetOfExactType<_InheritedWalletListScope>();
+        .getInheritedWidgetOfExactType<_InheritedFeatureScope>();
     if (scope == null) {
-      throw StateError('WalletListScope not found in widget tree');
+      throw StateError('FeatureScope not found in widget tree');
     }
 
     return scope.newBloc();
@@ -152,14 +152,74 @@ class WalletListScope extends StatefulWidget {
 }
 
 // Screen: BlocProvider(create:) low in tree
-class WalletListScreen extends StatelessWidget {
-  const WalletListScreen({super.key});
+class FeatureScreen extends StatelessWidget {
+  const FeatureScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => BlocProvider<WalletListBloc>(
-    create: (_) => WalletListScope.newBloc(context),
-    child: const _WalletListView(),
+  Widget build(BuildContext context) => BlocProvider<FeatureBloc>(
+    create: (_) => FeatureScope.newBloc(context),
+    child: const _FeatureView(),
   );
+}
+```
+
+Full three-level pattern:
+
+```dart
+// Level 1: Scope (StatefulWidget) — holds dependencies, exposes static factory
+class FeatureScope extends StatefulWidget {
+  const FeatureScope({super.key, required this.child});
+  final Widget child;
+
+  static FeatureBloc newBloc(BuildContext context) {
+    final scope = context
+        .getInheritedWidgetOfExactType<_InheritedFeatureScope>();
+    assert(scope != null, 'FeatureScope not found in widget tree');
+    return scope!._newBloc();
+  }
+
+  @override
+  State<FeatureScope> createState() => _FeatureScopeState();
+}
+
+// Level 2: State — wires dependencies from AppScope
+class _FeatureScopeState extends State<FeatureScope> {
+  late final FeatureRepository _featureRepository;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_initialized) return;
+    _initialized = true;
+    _featureRepository = AppScope.of(context).featureRepository;
+  }
+
+  bool _initialized = false;
+
+  FeatureBloc _newBloc() => FeatureBloc(
+        featureRepository: _featureRepository,
+      );
+
+  @override
+  Widget build(BuildContext context) => _InheritedFeatureScope(
+        newBloc: _newBloc,
+        child: widget.child,
+      );
+}
+
+// Level 3: InheritedWidget — exposes factory down the tree
+class _InheritedFeatureScope extends InheritedWidget {
+  const _InheritedFeatureScope({
+    required this.newBloc,
+    required super.child,
+  });
+
+  final FeatureBloc Function() newBloc;
+
+  FeatureBloc _newBloc() => newBloc();
+
+  @override
+  bool updateShouldNotify(_InheritedFeatureScope old) => false;
 }
 ```
 
@@ -169,14 +229,14 @@ For use cases with a **single method**, name it `call` instead of `execute`. Thi
 
 ```dart
 // ❌ Legacy
-class GetWalletsUseCase {
-  Future<List<Wallet>> execute() => _repository.getWallets();
+class GetItemsUseCase {
+  Future<List<Item>> execute() => _repository.getItems();
 }
 // await useCase.execute()
 
 // ✅ Modern
-class GetWalletsUseCase {
-  Future<List<Wallet>> call() => _repository.getWallets();
+class GetItemsUseCase {
+  Future<List<Item>> call() => _repository.getItems();
 }
 // await useCase()
 ```
@@ -194,10 +254,10 @@ Multi-method services keep explicit method names — `call` is reserved for sing
 
 ```dart
 // ❌
-import '../local/wallet_local_store.dart';
+import '../local/feature_local_store.dart';
 
 // ✅
-import 'package:data/src/local/wallet_local_store.dart';
+import 'package:data/src/local/feature_local_store.dart';
 ```
 
 ## Examples
@@ -220,4 +280,37 @@ if (name != null) {
 // Bad: null assertion, missing type, no braces
 final greeting = 'Hello, ${user.name!}';
 if (condition) return greeting; // no braces, no blank line
+```
+
+## Test File Structure
+
+`main()` is always the **first declaration** in a test file.
+Private helpers, factory methods, and fakes come **after** `main()`.
+
+```dart
+// ✅
+void main() {
+  group('FeatureBloc', () {
+    test('emits loaded state', () { ... });
+  });
+}
+
+FeatureBloc _buildBloc({FeatureRepository? repo}) =>
+    FeatureBloc(repository: repo ?? FakeFeatureRepository());
+```
+
+## Method Placement
+
+Prefer **private instance methods** over top-level file-private functions
+when the function is only used by one class.
+Do not mark such helpers `static` unless they truly have no instance dependency.
+
+```dart
+// ❌ Top-level — pollutes file namespace, obscures ownership
+String _formatBalance(int lamports) => '${lamports / 1e9} SOL';
+
+// ✅ Private instance method — cohesive, scoped to the class
+class _FeatureTile extends StatelessWidget {
+  String _formatBalance(int lamports) => '${lamports / 1e9} SOL';
+}
 ```

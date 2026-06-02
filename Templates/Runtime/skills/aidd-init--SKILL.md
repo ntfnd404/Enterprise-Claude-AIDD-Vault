@@ -60,6 +60,21 @@ If `--adaptor flutter-dart` is specified, additionally:
 3. Copy `<VAULT>/Tech Adaptors/Flutter-Dart/post-edit-format.sh` → `.claude/hooks/post-edit-format.sh`
 4. Add PostToolUse hook entry to `.claude/settings.json` pointing to `post-edit-format.sh`
 5. Read `<VAULT>/Tech Adaptors/Flutter-Dart/mcp-config.md` → generate `.mcp.json` skeleton
+   - `.mcp.json` contains both `dart` and `dcm` MCP servers
+   - **If automatic creation is blocked by permissions**: show the file contents to the user
+     and ask them to create it manually or add a Write permission for `.mcp.json`
+6. Read `<VAULT>/Tech Adaptors/Flutter-Dart/run-checks-overlay.md`
+   → extract the `## Generated aidd-checks.sh` code block → `.claude/aidd-checks.sh`
+   → `chmod +x .claude/aidd-checks.sh`
+   This enables `/aidd-run-checks` to work. Without it the skill always fails with "no check pipeline".
+7. Read `<VAULT>/Tech Adaptors/Flutter-Dart/external-skills-overlay.md`
+   → install skills marked "Полностью применимы" and "Применимы с оговорками" (16 total):
+     For each skill name, copy `<SKILLS_VAULT>/Catalog/<Flutter|Dart>/<skill-name>.md`
+     → `.claude/skills/<skill-name>/SKILL.md`
+   where `<SKILLS_VAULT>` = `~/Documents/Obsidian/Skills/Skills`
+   → copy `external-skills-overlay.md` → `docs/project/external-skills.md`
+   → copy `gate-skill-matrix.md`       → `docs/project/gate-skill-matrix.md`
+   **Do NOT install** skills marked "Неприменимы в текущем проекте".
 
 ## Template Substitution
 
