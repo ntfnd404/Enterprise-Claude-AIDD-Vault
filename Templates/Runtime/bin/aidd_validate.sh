@@ -175,6 +175,7 @@ done
 # ---------------------------------------------------------------------------
 
 # Stale legacy workspace paths in shared workflow files.
+# Exclude aidd-validate skill dir — it documents the patterns it checks for.
 stale_refs=$(
   grep -rn "docs/feature/" \
     AGENTS.md \
@@ -184,6 +185,7 @@ stale_refs=$(
     docs/project/templates/ \
     .claude/agents/ \
     .claude/skills/ \
+    --exclude-dir=aidd-validate \
     2>/dev/null || true
 )
 if [[ -n "${stale_refs}" ]]; then

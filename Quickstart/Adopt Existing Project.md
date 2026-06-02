@@ -28,6 +28,8 @@ cp "<PATH_TO_VAULT>/Templates/Runtime/skills/aidd-init--SKILL.md" \
    .claude/skills/aidd-init/SKILL.md
 ```
 
+> **Диагностика:** если `/aidd-init` не реагирует после установки — откройте новую сессию Claude Code (скиллы загружаются при старте сессии). Убедитесь, что файл существует: `ls .claude/skills/aidd-init/SKILL.md`.
+
 ## Шаг 1: Запуск аудита
 
 ```text

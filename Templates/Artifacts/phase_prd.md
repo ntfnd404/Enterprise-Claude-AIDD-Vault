@@ -26,7 +26,7 @@ Workflow Minor 3.2 requires every PRD to include EITHER:
   - a `### Considered and rejected` stub listing >=3 ambiguities the analyst
     explicitly considered and chose NOT to raise, with justification.
 A PRD missing both will fail `.claude/bin/aidd_validate.sh`. Use placeholder
-ticket IDs like `BW-XXXX` in any example Q/A you include here.
+ticket IDs like `<PREFIX>-XXXX` in any example Q/A you include here.
 -->
 
 - **Q1 (analyst -> owner):** <!-- question -->
