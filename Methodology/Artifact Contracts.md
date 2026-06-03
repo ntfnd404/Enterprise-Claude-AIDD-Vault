@@ -127,3 +127,7 @@ docs/<TICKET>/
 ```
 
 Полный аннотированный пример см. [[../Examples/Feature Workspace Structure]].
+
+## Critical-lane discovery — preservation rule (C6)
+
+Когда для Critical-тикета существует discovery-артефакт, отвергнутые альтернативы (`rejected alternatives`) ДОЛЖНЫ быть сохранены с причинами (`preserved with reasons`). Dispositions «noted» или «summarised» недопустимы — полное обоснование каждого отказа должно присутствовать, чтобы будущие ревьюеры могли восстановить контекст решения.
