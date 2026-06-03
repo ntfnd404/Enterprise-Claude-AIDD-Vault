@@ -65,3 +65,24 @@ Provide text alternatives for QR codes. Respect system font scaling.
 Always declare required entitlements explicitly on macOS/iOS.
 HLS is supported on Android, iOS, macOS, Web only — guard with platform check.
 flutter_secure_storage requires `keychain-access-groups` entitlement on macOS.
+
+## Design Patterns
+
+| Pattern | Where used |
+|---------|-----------|
+| **Repository** | `domain/repository/` interfaces + `data/repository/` implementations |
+| **Gateway** | `application/` port interfaces + `data/` adapter implementations |
+| **Factory** | `FeatureScope` + `BlocFactory` — DI without a service locator |
+| **Observer** | BLoC streams — UI reacts to emitted state changes |
+| **Strategy** | Pluggable algorithms (coin selection, signing strategies) |
+
+## Test Structure Mirroring
+
+Mirror the source structure in tests:
+`packages/<module>/lib/src/foo.dart` → `packages/<module>/test/foo_test.dart`
+
+This makes it immediately clear which test file covers which source file.
+
+## Integration Test Rule
+
+Integration tests must run against real external implementations — never mock persistence or storage layers. If a test requires mocking the database or secure storage to pass, it is a unit test, not an integration test.

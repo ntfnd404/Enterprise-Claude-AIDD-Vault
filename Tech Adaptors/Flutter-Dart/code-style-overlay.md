@@ -314,3 +314,76 @@ class _FeatureTile extends StatelessWidget {
   String _formatBalance(int lamports) => '${lamports / 1e9} SOL';
 }
 ```
+
+## Initialising Formals
+
+Always use initialising formals (`this.field`) instead of an initialiser list for simple field assignment.
+
+```dart
+// ❌ Initialiser list for simple assignment
+class Foo {
+  final String _id;
+  Foo(String id) : _id = id;
+}
+
+// ✅ Initialising formal
+class Foo {
+  final String _id;
+  const Foo(this._id);
+}
+```
+
+Exception: when the parameter name must differ from the field, or the initialiser list performs additional logic (`assert`, `super(...)`, or a derived assignment).
+
+## Instance Field Sub-Ordering
+
+Within each visibility group, order instance fields:
+1. `final` fields first
+2. `late` fields second
+3. Nullable (`T?`) fields last
+
+Public fields before private fields within each group.
+
+## `on Exception catch` at Infrastructure Boundaries
+
+Use `on Exception catch` (not bare `catch`) when wrapping infrastructure calls
+to prevent Dart `Error` subclasses (`TypeError`, `AssertionError`, `RangeError`)
+from being silently treated as domain exceptions.
+
+```dart
+// ❌ Masks programmer errors as domain exceptions
+try {
+  return await _gateway.fetch();
+} catch (e, stack) {
+  Error.throwWithStackTrace(const FetchException(), stack);
+}
+
+// ✅ TypeError/AssertionError propagate to zone handler
+try {
+  return await _gateway.fetch();
+} on Exception catch (_, stack) {
+  Error.throwWithStackTrace(const FetchException(), stack);
+}
+```
+
+## BLoC Public API
+
+Never expose public fields or public methods on BLoC classes.
+All interaction happens through events. Expose only the `stream` and `state` that `flutter_bloc` provides via the base class.
+
+## Test File Imports
+
+- **Between test files**: relative imports are allowed and required — `package:` URIs resolve only to a package's `lib/` directory, so `../fakes/fake_foo.dart` is correct inside `test/`.
+- **Production code from tests**: always use `package:` imports.
+
+## StatefulWidget Lifecycle Order
+
+Source file order must match the lifecycle call order:
+
+1. `initState`
+2. `didChangeDependencies`
+3. `didUpdateWidget`
+4. `build`
+5. `dispose`
+6. Public methods
+7. Private methods

@@ -421,6 +421,9 @@ No repository/service implementations inside a feature directory — use module 
 No entities or interfaces inside a feature directory — use module `domain/`
 No imports from another feature's `bloc/` or `domain/` — cross-feature only via event bus or router
 No imports of module `src/data/*` from features — use public API (barrel) only
+No deep-import `package:<module>/src/*` from `lib/` or `test/` — barrels only
+No import of app code (`lib/`) from a workspace package
+No top-level `components/` directory — business code belongs in `packages/`
 No god-object BLoCs handling multiple flows — one BLoC per flow
 No `Exception?` field in BLoC state — errors are actions, not state
 No `error` value in status enum — same reason
@@ -429,6 +432,7 @@ No `throw e` — use `rethrow` or `Error.throwWithStackTrace(newException, stack
 No inline test doubles — `fakes/` or `mocks/` subfolders only, never `helpers/`
 No mocktail on `final class` — only `abstract class` or `abstract interface class`
 No mocking dependencies of `*Impl` to unit-test the impl — test through interfaces
+No import of `/gateway/` or `/repository/` paths from `lib/feature/**/view/**`
 Never commit with analyzer warnings/infos
 ```
 
@@ -462,3 +466,80 @@ class AppRouterDelegate extends RouterDelegate<AppRoute>
 
 Never wire feature scopes inside individual `Page`/`Route` widgets —
 BLoC instances will be recreated on every navigation push.
+
+---
+
+## Monorepo Topology Rules
+
+- Default topology is **Scheme A**: one Flutter app at the repo root, reusable code in `packages/`.
+- Do **not** create a top-level `components/` directory for business code — use `packages/`.
+- Introduce `apps/` only when a second independently releasable app actually exists.
+- Do **not** adopt `melos` by default. Add it only when pub workspace + `make` stop being sufficient for filtered multi-package commands, shared scripts, coordinated versioning, or complex CI orchestration.
+
+---
+
+## `lib/core/` Mandate
+
+`lib/core/` contains **only**:
+- `di/` — composition root (`AppDependencies`, `AppDependenciesBuilder`)
+- `routing/` — `AppRouter`, `AppRouterDelegate`
+- `event_bus/` — `AppEventBus` and domain event hierarchy
+- `adapters/` — composition adapters that bridge two packages that cannot depend on each other directly
+- `config/` — `AppEnvironment`, `EnvironmentLoader`, and related config types
+- `bootstrap/` — app initialisation
+
+**Not allowed in `lib/core/`:**
+- UI theme, tokens, fonts → `ui_kit`
+- Extensions without architectural role → `lib/common/`
+- Domain logic → `packages/*`
+- Feature state → `lib/feature/*`
+
+**Escalation rule for `lib/core/adapters/`:** An adapter is acceptable only when all hold:
+1. It bridges two package-level bounded contexts that cannot depend on each other directly (or where one direction creates a cycle).
+2. It carries real logic (DTO translation, use-case composition) — not a thin passthrough.
+3. It is the **only** such bridge between those two BCs.
+
+---
+
+## `lib/common/` Guard
+
+`lib/common/` is for app-local shared helpers only (widgets, extensions, small utilities).
+
+It **must not** become a second unofficial shared platform layer. If a type or UI primitive is reusable beyond this app shell, promote it into a `packages/` package.
+
+---
+
+## Design Principles
+
+SOLID, KISS, YAGNI, GRASP (High Cohesion, Low Coupling).
+
+Patterns in use: Repository, Gateway, Factory, Observer, Strategy, Ports & Adapters.
+
+Each entity has **one owner package** — no shared ownership of the same concept across packages.
+
+---
+
+## BLoC Broad Catch Ordering
+
+Broad `catch (e, stack)` in a BLoC event handler **must** call `emitAction(XxxUnexpectedFailedAction())` **before** `addError(e, stack)`. The user must see feedback even if the BLoC closes after the error.
+
+```dart
+// ✅ Action first, then addError
+} catch (e, stack) {
+  emitAction(const XxxUnexpectedFailedAction());
+  addError(e, stack);
+}
+```
+
+---
+
+## README Touch Rule
+
+Any change to a package's layer structure — subfolder add, remove, or rename under `domain/`, `application/`, or `data/` — must update that package's `README.md` in the same commit. This is a process rule; reviewer discipline is the enforcement mechanism.
+
+---
+
+## Dependencies
+
+- Use **exact versions**: `solana: 0.32.0+1`, not `^0.32.0+1`.
+- List dependencies alphabetically within each group in `pubspec.yaml`.
