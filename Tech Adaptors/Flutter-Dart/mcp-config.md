@@ -11,7 +11,7 @@
     },
     "dcm": {
       "command": "dcm",
-      "args": ["mcp-server"]
+      "args": ["start-mcp-server", "--client=claude-desktop"]
     }
   }
 }
