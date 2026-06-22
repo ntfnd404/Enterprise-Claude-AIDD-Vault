@@ -6,7 +6,7 @@
 |---|---|---|---|
 | `InstructionsLoaded` | Напоминание об активном рабочем процессе и дисциплине полосы | `instructions-loaded.sh` | async |
 | `SessionStart` (compact) | Восстановление контекста тикета/фазы после компактификации | `session-compact.sh` | sync |
-| `PreToolUse` (Write/Edit) | Блокировка записи в защищённые файлы, проверка наличия активного тикета | `pre-edit-guard.sh` | sync + statusMessage |
+| `PreToolUse` (Write/Edit) | Блокировка записи в защищённые файлы, проверка активного тикета, advisory-напоминание об открытии фазы | `pre-edit-guard.sh` | sync + statusMessage |
 | `PostToolUse` (Write/Edit) | Автоформатирование исходных файлов после каждого редактирования | `post-edit-format.sh` | sync + statusMessage |
 | `PostCompact` | Восстановление тикета/фазы/полосы/цели после компактификации контекста | `post-compact-reinject.sh` | sync |
 | `FileChanged` | Ревалидация процессного слоя при изменении файлов рабочего процесса | `file-changed-guard.sh` | sync + statusMessage |
@@ -43,11 +43,14 @@ Session resumed after compaction. Active ticket: <TICKET>. Re-read phase brief a
 
 ### PreToolUse
 
-Срабатывает перед каждым вызовом инструмента Write, Edit или MultiEdit (matcher: `Write|Edit|MultiEdit`). Три уровня проверки:
+Срабатывает перед каждым вызовом инструмента Write, Edit или MultiEdit (matcher: `Write|Edit|MultiEdit`). Четыре уровня проверки:
 
 1. **Защищённые файлы** -- `.git/`, `.env`, `secrets/`, `.claude/settings.local.json` -- всегда блокируется (exit 2)
 2. **Гейт активного тикета** -- исходные директории (настраиваются через `$AIDD_SOURCE_DIRS`) без `.active_ticket` -- блокируется
+2.5. **Напоминание об открытии фазы** -- при правке исходников: если в `tasklist-<TICKET>.md` есть фаза со статусом `≠ Pending`, но без PRD-артефакта (`prd/<TICKET>-phase-N.prd.md`) -- разрешается с advisory-напоминанием запустить `/aidd-new-phase` (открыть фазу: PRD -> research -> plan -> brief до имплементации). **Никогда не блокирует.** Ловит «имплементацию в неоткрытую фазу».
 3. **Файлы рабочего процесса** -- `CLAUDE.md`, `AGENTS.md`, templates, `.claude/*` -- разрешается с advisory-предупреждением
+
+Определение «исходной директории» вычисляется один раз под `set -f` (noglob), чтобы паттерны `$AIDD_SOURCE_DIRS` (`lib/*`, `packages/*`, …) работали как case-globs, а не разворачивались по cwd.
 
 Использует `statusMessage` для отображения спиннера в UI без расхода токенов контекста.
 
