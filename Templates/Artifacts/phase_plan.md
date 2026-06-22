@@ -45,6 +45,26 @@ Owner: Planner / Architect
 
 ---
 
+## Design Principles & Patterns
+
+<!--
+Mandatory: name every OOP, SOLID, GRASP, GoF, DRY, DDD, and TDD principle or
+pattern that applies to this phase so the Implementer does not reinvent them.
+"See conventions" is not enough — name the pattern and where it applies here.
+Examples:
+  - DIP + Strategy (GoF): XxxService depends on XxxPort interface, not concrete impl
+  - SRP: XxxDriver owns timer lifecycle; XxxService owns session lifecycle
+  - Null Object (GoF): NoOpXxx as the default no-op dependency
+  - Repository (DDD): XxxRepository abstracts persistence
+  - TDD: write failing test before each task in the Execution Checklist
+-->
+
+- <!-- e.g. DIP + Strategy (GoF): ... -->
+- <!-- e.g. SRP: ... -->
+- <!-- e.g. TDD: ... -->
+
+---
+
 ## Checks
 
 - Static analysis clean
