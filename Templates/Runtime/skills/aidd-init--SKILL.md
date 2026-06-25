@@ -58,6 +58,7 @@ If `--adaptor flutter-dart` is specified, additionally:
 1. Read `<VAULT>/Tech Adaptors/Flutter-Dart/conventions-overlay.md` → append to `docs/project/conventions.md`
 2. Read `<VAULT>/Tech Adaptors/Flutter-Dart/code-style-overlay.md` → append to `docs/project/code-style-guide.md`
 2a. Read `<VAULT>/Tech Adaptors/Flutter-Dart/guidelines-overlay.md` → append to `docs/project/guidelines.md`
+2b. Copy `<VAULT>/Tech Adaptors/Flutter-Dart/bloc-communication.md` → `docs/project/bloc-communication.md`
 3. Copy `<VAULT>/Tech Adaptors/Flutter-Dart/post-edit-format.sh` → `.claude/hooks/post-edit-format.sh`
 4. Add PostToolUse hook entry to `.claude/settings.json` pointing to `post-edit-format.sh`
 5. Read `<VAULT>/Tech Adaptors/Flutter-Dart/mcp-config.md` → generate `.mcp.json` skeleton

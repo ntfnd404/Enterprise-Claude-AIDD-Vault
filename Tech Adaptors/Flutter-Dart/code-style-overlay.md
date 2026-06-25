@@ -139,14 +139,14 @@ class FeatureScope extends StatefulWidget {
   const FeatureScope({required this.child});
   final Widget child;
 
-  static FeatureBloc newBloc(BuildContext context) {
+  static FeatureBloc createBloc(BuildContext context) {
     final scope = context
         .getInheritedWidgetOfExactType<_InheritedFeatureScope>();
     if (scope == null) {
       throw StateError('FeatureScope not found in widget tree');
     }
 
-    return scope.newBloc();
+    return scope.blocFactory();
   }
   // ...
 }
@@ -157,7 +157,7 @@ class FeatureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider<FeatureBloc>(
-    create: (_) => FeatureScope.newBloc(context),
+    create: (_) => FeatureScope.createBloc(context),
     child: const _FeatureView(),
   );
 }
@@ -171,11 +171,14 @@ class FeatureScope extends StatefulWidget {
   const FeatureScope({super.key, required this.child});
   final Widget child;
 
-  static FeatureBloc newBloc(BuildContext context) {
+  static FeatureBloc createBloc(BuildContext context) {
     final scope = context
         .getInheritedWidgetOfExactType<_InheritedFeatureScope>();
-    assert(scope != null, 'FeatureScope not found in widget tree');
-    return scope!._newBloc();
+    if (scope == null) {
+      throw StateError('FeatureScope not found in widget tree');
+    }
+
+    return scope.blocFactory();
   }
 
   @override
@@ -184,39 +187,36 @@ class FeatureScope extends StatefulWidget {
 
 // Level 2: State — wires dependencies from AppScope
 class _FeatureScopeState extends State<FeatureScope> {
-  late final FeatureRepository _featureRepository;
+  late final Factory<FeatureBloc> _blocFactory;
+  bool _initialized = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_initialized) return;
     _initialized = true;
-    _featureRepository = AppScope.of(context).featureRepository;
+
+    final deps = AppScope.of(context);
+    _blocFactory = () => FeatureBloc(
+      featureRepository: deps.featureRepository,
+    );
   }
-
-  bool _initialized = false;
-
-  FeatureBloc _newBloc() => FeatureBloc(
-        featureRepository: _featureRepository,
-      );
 
   @override
   Widget build(BuildContext context) => _InheritedFeatureScope(
-        newBloc: _newBloc,
-        child: widget.child,
-      );
+    blocFactory: _blocFactory,
+    child: widget.child,
+  );
 }
 
 // Level 3: InheritedWidget — exposes factory down the tree
 class _InheritedFeatureScope extends InheritedWidget {
   const _InheritedFeatureScope({
-    required this.newBloc,
+    required this.blocFactory,
     required super.child,
   });
 
-  final FeatureBloc Function() newBloc;
-
-  FeatureBloc _newBloc() => newBloc();
+  final Factory<FeatureBloc> blocFactory;
 
   @override
   bool updateShouldNotify(_InheritedFeatureScope old) => false;
@@ -370,6 +370,16 @@ try {
 
 Never expose public fields or public methods on BLoC classes.
 All interaction happens through events. Expose only the `stream` and `state` that `flutter_bloc` provides via the base class.
+
+## BLoC Coordination
+
+- Do not read one BLoC's state to create another BLoC when both values can come from the same route argument or dependency.
+- Do not subscribe to another BLoC's stream. Subscribe to a shared source of truth or `AppEventBus`.
+- For shared state, subscribe in the BLoC constructor, dispatch an internal event such as `_SessionLockChanged`, and cancel in `close()`.
+- For one-time facts, subscribe to `AppEventBus`, filter by typed event, dispatch an internal event, and cancel in `close()`.
+- Use `BlocListener` only for UI effects in the same presentation subtree, not for BLoC-to-BLoC coordination.
+
+See `docs/project/bloc-communication.md` for the full decision matrix.
 
 ## Test File Imports
 

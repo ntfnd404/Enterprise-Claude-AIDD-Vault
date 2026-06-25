@@ -143,7 +143,11 @@ Rules:
 - Never route UI effects (SnackBar, navigation) through the event bus — couples presentation to the bus and inverts dependency direction (presentation → domain becomes domain → presentation).
 - Never route cross-feature notifications through `emitAction` — actions are scoped to one BLoC's widget subtree; another feature will never see them.
 - Never use `BlocListener<OtherFeatureBloc, …>` across features — use EventBus.
+- Never use the event bus for state. If consumers need "how is it now?", use a shared state source instead.
+- Never make one BLoC subscribe to another BLoC. Subscribe to a repository/gateway/service/store stream or to `AppEventBus`.
 - Broad `catch (e, stack)` in a BLoC handler **must** `emitAction(XxxUnexpectedFailedAction())` **before** `addError(e, stack)` — the user must see feedback even if the BLoC closes afterward.
+
+For the full state-stream vs event-bus decision matrix, see `docs/project/bloc-communication.md`.
 
 ### Action naming
 
@@ -256,7 +260,9 @@ try {
 
 - Constructor-based DI (no GetIt or service locator)
 - `InheritedWidget` at feature scope
-- `Scope` pattern: `FeatureScope(create: BlocFactory)` + `AppScope(dependencies)`
+- `Scope` pattern: `FeatureScope.createBloc(context)` + `AppScope(dependencies)`
+- Scope factory naming: public static method `createBloc(...)`, private state field `_blocFactory`, inherited field `blocFactory`
+- Use `Factory<T>` / `ParamFactory<T, P>` from `lib/core/di/typedefs/factory.dart` for DI factories
 - Each feature has its own `di/` directory with Scope and BlocFactory
 
 ---
@@ -284,11 +290,14 @@ A feature is a Bounded Context UI representation. Each user flow inside it (list
 Features are independent Bounded Contexts. They **must not** import each other's `bloc/` or `domain/`. Allowed channels:
 
 - **AppEventBus** — typed events (`sealed class AppEvent`) for cross-feature notifications
+- **Shared state source** — repository/gateway/service/store stream when multiple consumers need the same current value
 - **Router** — composition point (`AppRouterDelegate.build()`)
 - **AppScope** — shared dependencies (repositories, use cases) wired once at app level
 - **Shared UI** — importing another feature's `shared/` widget is acceptable
 
 Direct BLoC-to-BLoC subscription across features is forbidden — it couples Bounded Contexts.
+Do not create one BLoC from another BLoC's state when both can be created from the same route parameter or dependency.
+See `docs/project/bloc-communication.md` for the full decision matrix.
 
 ---
 
@@ -435,6 +444,9 @@ No `^` in dependency versions — exact versions only
 No repository/service implementations inside a feature directory — use module `data/`
 No entities or interfaces inside a feature directory — use module `domain/`
 No imports from another feature's `bloc/` or `domain/` — cross-feature only via event bus or router
+No BLoC-to-BLoC subscriptions — use a shared state source or `AppEventBus`
+No event bus for state — use repository/gateway/service/store stream
+No repository without a real data source — use an owning package/app-shell service/store for ephemeral app state
 No imports of module `src/data/*` from features — use public API (barrel) only
 No deep-import `package:<module>/src/*` from `lib/` or `test/` — barrels only
 No import of app code (`lib/`) from a workspace package
@@ -508,6 +520,22 @@ BLoC instances will be recreated on every navigation push.
 - Extensions without architectural role → `lib/common/`
 - Domain logic → `packages/*`
 - Feature state → `lib/feature/*`
+
+### BLoC Communication
+
+Independent BLoCs do not communicate directly. They coordinate through one of:
+
+- a shared state source when consumers need a current value and changes;
+- `AppEventBus` when consumers react to a one-time fact;
+- router/composition parameters when values are known at creation time;
+- an explicit coordinator when orchestration spans multiple readiness signals.
+
+State with a real data source belongs behind a repository/gateway contract.
+Ephemeral runtime state with no external source belongs in an application
+service/store owned by the relevant package or app shell. Facts belong on
+`AppEventBus`.
+
+See `docs/project/bloc-communication.md` for the full decision matrix.
 
 **Escalation rule for `lib/core/adapters/`:** An adapter is acceptable only when all hold:
 1. It bridges two package-level bounded contexts that cannot depend on each other directly (or where one direction creates a cycle).
