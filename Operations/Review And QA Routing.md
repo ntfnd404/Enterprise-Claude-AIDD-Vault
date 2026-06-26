@@ -23,6 +23,13 @@ reviewer → qa
 reviewer → security-reviewer → qa
 ```
 
+
+## Superpowers pre-review
+
+Superpowers code-reviewer можно использовать до официального reviewer gate как self-check. Он помогает найти проблемы раньше, но не создает `REVIEW_OK` и не заменяет reviewer artifact.
+
+В Critical lane Superpowers не заменяет security-reviewer и не разрешает переходить к QA при security blocker.
+
 ## Проверки качества (`/aidd-run-checks`)
 
 Четыре проверки последовательно, остановка при первой ошибке:

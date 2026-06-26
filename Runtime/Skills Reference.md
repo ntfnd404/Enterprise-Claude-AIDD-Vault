@@ -238,6 +238,17 @@
 | Внешние | `flutter-*`, `dart-*` | да | вендор |
 | Доменные | произвольный | по `paths:` | проект |
 
+## Типы skills и plugins
+
+| Тип | Префикс / пример | Может закрывать AIDD gate | Владелец |
+|---|---|---|---|
+| Workflow skills | `/aidd-*` | Да, только по контракту конкретного `/aidd-*` | AIDD vault |
+| Stack execution skills | `dart-*`, `flutter-*` | Нет | Вендор / Tech Adaptor |
+| Superpowers execution methodology | `/brainstorming`, `/execute-plan`, TDD, debugging, code-reviewer | Нет | Superpowers plugin |
+| Domain/project-specific skills | project-specific names | Нет, если явно не оформлены как AIDD workflow skills | Проект |
+
+`/aidd-*` остаются единственными workflow-командами. Остальные skills/plugins помогают внутри роли и gate.
+
 ## Доменные скиллы
 
 Доменные скиллы -- проектно-специфичные. Примеры:

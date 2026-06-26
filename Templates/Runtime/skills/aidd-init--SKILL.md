@@ -33,6 +33,7 @@ Every file created by this skill MUST be read from the vault first and copied as
 | `.claude/bin/aidd_validate.sh` | `<VAULT>/Templates/Runtime/bin/aidd_validate.sh` |
 | `.claude/settings.json` | `<VAULT>/Templates/Runtime/settings.json` |
 | `docs/project/workflow.md` | `<VAULT>/Templates/Project Docs/workflow.md` |
+| `docs/project/superpowers-overlay.md` | `<VAULT>/Templates/Project Docs/superpowers-overlay.md` |
 | `docs/project/conventions.md` | `<VAULT>/Templates/Project Docs/conventions.md.stub` |
 | `docs/project/code-style-guide.md` | `<VAULT>/Templates/Project Docs/code-style-guide.md.stub` |
 | `docs/project/guidelines.md` | `<VAULT>/Templates/Project Docs/guidelines.md.stub` |
@@ -70,7 +71,7 @@ If `--adaptor flutter-dart` is specified, additionally:
    → `chmod +x .claude/aidd-checks.sh`
    This enables `/aidd-run-checks` to work. Without it the skill always fails with "no check pipeline".
 7. Read `<VAULT>/Tech Adaptors/Flutter-Dart/external-skills-overlay.md`
-   → install skills marked "Полностью применимы" and "Применимы с оговорками" (16 total):
+   → install skills marked "Полностью применимы" and "Применимы с оговорками" (16 unique skills):
      For each skill name, copy `<SKILLS_VAULT>/Catalog/<Flutter|Dart>/<skill-name>.md`
      → `.claude/skills/<skill-name>/SKILL.md`
    where `<SKILLS_VAULT>` = `~/Documents/Obsidian/Skills/Skills`

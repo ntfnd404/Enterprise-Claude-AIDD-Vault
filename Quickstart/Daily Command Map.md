@@ -22,6 +22,20 @@
 | `/hooks` | Показать зарегистрированные хуки |
 | `/mcp` | Показать MCP-серверы |
 
+
+## Команды Superpowers (вспомогательные)
+
+| Команда / практика | Когда использовать | Ограничение |
+|---|---|---|
+| `/brainstorming` | Уточнение идеи, scope, PRD | Не закрывает `PRD_READY` |
+| Adversarial spec review | Проверка PRD/plan на противоречия | Professional: рекомендуется; Critical: обязательно |
+| TDD | Реализация поведения внутри батча | Не обязательно для каждого UI/layout изменения |
+| Systematic debugging | QA_FAIL, flaky tests, runtime bugs | Сначала root cause, потом fix |
+| `/execute-plan` | Исполнение approved batch | Только после `/aidd-start-phase` и approval |
+| code-reviewer | Pre-review перед официальным reviewer | Не `REVIEW_OK` |
+
+`/aidd-*` остаются единственными командами воркфлоу и гейтов.
+
 ## События хуков (автоматические)
 
 | Событие | Когда срабатывает |

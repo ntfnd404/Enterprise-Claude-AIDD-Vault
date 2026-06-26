@@ -2,6 +2,17 @@
 
 Слой переиспользуемых skill-паков от вендоров (Flutter team, Dart team и будущих). Каталог карточек — в отдельном vault [Skills](obsidian://open?vault=Skills&file=Home).
 
+
+## Слои исполнения
+
+| Слой | Префикс / команда | Роль |
+|---|---|---|
+| AIDD workflow skills | `/aidd-*` | Управляют lifecycle и gate progression |
+| Flutter/Dart stack skills | `dart-*`, `flutter-*` | Помогают выполнять стековые задачи внутри AIDD gate |
+| Superpowers plugin | `/brainstorming`, `/execute-plan`, TDD, debugging, code-reviewer, subagents | Общая методика исполнения; не закрывает AIDD gates |
+
+Superpowers описан отдельно: [[Superpowers Overlay]].
+
 ## Доктрина
 
 > **MCP даёт инструменты. Skill учит, как использовать инструменты для задачи. AIDD оркестрирует, какой skill срабатывает на каком гейте.**
@@ -69,3 +80,7 @@ QA_PASS              → flutter-add-integration-test, dart-collect-coverage (Cr
 - 10 Flutter skills под `Catalog/Flutter/`
 - 9 Dart skills под `Catalog/Dart/`
 - Мета: шаблон карточки, MCP-зависимости, процесс обновления
+
+## Superpowers
+
+Superpowers — это не Flutter/Dart skill-pack, а Claude Code plugin с общей методикой разработки. Он может помогать в brainstorming, TDD, systematic debugging, `/execute-plan`, pre-review и skill authoring. AIDD gates win over external skills and plugins: Superpowers не заменяет PRD, plan, reviewer, security-reviewer или QA.

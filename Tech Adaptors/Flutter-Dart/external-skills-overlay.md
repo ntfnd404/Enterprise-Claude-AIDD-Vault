@@ -4,9 +4,20 @@
 
 См. также: [[../../Runtime/External Skills]] и [[gate-skill-matrix]].
 
+
+## Слои исполнения
+
+| Слой | Префикс / команда | Роль |
+|---|---|---|
+| AIDD workflow skills | `/aidd-*` | Управляют lifecycle и gate progression |
+| Flutter/Dart stack skills | `dart-*`, `flutter-*` | 16 unique installed skills для работы внутри AIDD gates |
+| Superpowers plugin | `/brainstorming`, `/execute-plan`, TDD, debugging, code-reviewer | Общая методика исполнения; не является gate command |
+
+Flutter/Dart skills выбираются по типу батча. Superpowers может помогать с процессом исполнения, но не заменяет Flutter/Dart conventions и AIDD gates.
+
 ## Активный набор
 
-19 skills, разбиты на три категории по применимости:
+19 catalog rows, разбиты на три категории по применимости. Adaptor устанавливает 16 unique skills из первых двух категорий:
 
 ### Полностью применимы (core set)
 

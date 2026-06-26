@@ -43,3 +43,16 @@
 ## Conventions override
 
 Все skills исполняются в контексте `docs/project/conventions.md`. Конфликт разрешается в пользу проекта — это закреплено в [[external-skills-overlay#Приоритеты при конфликте]].
+
+## Superpowers overlay
+
+| Ситуация | Superpowers aid | Ограничение |
+|---|---|---|
+| Нечеткий scope или PRD | `/brainstorming` | Результат переносится в AIDD artifacts |
+| PRD/plan может быть противоречивым | Adversarial spec review | Professional: рекомендуется; Critical: обязательно |
+| Реализация поведения | TDD | Внутри approved batch |
+| Runtime bug / QA_FAIL / flaky test | Systematic debugging | Сначала root cause |
+| Batch готов к реализации | `/execute-plan` | Только после `TASKLIST_READY` и approval |
+| Перед официальным ревью | code-reviewer | Pre-review, не `REVIEW_OK` |
+
+Superpowers не является gate closer. AIDD roles and artifacts remain authoritative.

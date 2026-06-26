@@ -41,6 +41,18 @@
 
 Полоса Professional: 2-5 связанных задач, если они образуют одну логическую единицу.
 
+
+## Superpowers в Professional lane
+
+Superpowers можно использовать только внутри approved batch:
+
+- `/execute-plan` исполняет batch, предложенный `/aidd-start-phase N` и одобренный оператором.
+- TDD рекомендуется для поведения, use cases, BLoC, codecs, gateways и regression fixes.
+- Systematic debugging применяется для runtime failures и flaky tests.
+- code-reviewer — pre-review, не `REVIEW_OK`.
+
+В конце батча summary должен указать docs-drift result: какие документы обновлены или почему update не нужен.
+
 ## Когда завершать
 
 Когда все элементы выполнения закрыты:

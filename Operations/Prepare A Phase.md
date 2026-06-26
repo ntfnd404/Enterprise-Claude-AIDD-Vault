@@ -27,6 +27,16 @@
 /aidd-start-phase N
 ```
 
+
+## Adversarial Spec Review
+
+Перед переходом к реализации выполните критический проход по PRD/plan:
+
+- Professional lane: рекомендуется.
+- Critical lane: обязательно перед `PLAN_APPROVED`.
+
+Цель: найти противоречия, implicit assumptions, overscope, questionable tech choices и acceptance criteria, которые нельзя проверить. Это мягкое правило: новый gate status не добавляется. Результат должен быть отражен в PRD/plan/brief, если найденные проблемы меняют scope или реализацию.
+
 ## Ожидаемые артефакты
 
 | Файл | Автор |

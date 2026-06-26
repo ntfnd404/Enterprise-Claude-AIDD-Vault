@@ -81,3 +81,13 @@
 Каждая роль может использовать внешние Flutter/Dart skill-паки внутри своего гейта без изменения контракта артефактов. Полная матрица: [[../Tech Adaptors/Flutter-Dart/gate-skill-matrix]]. Доктрина: [[../Runtime/External Skills]].
 
 Правило: skill — это исполнитель внутри гейта, а не его замена. Гейт закрывает роль, не skill.
+
+## Superpowers внутри ролей
+
+Роли могут использовать Flutter/Dart skills и Superpowers внутри своего gate, если это помогает выполнить контракт артефакта. Ни один внешний skill или plugin не закрывает gate самостоятельно.
+
+- Analyst может использовать `/brainstorming`, но `PRD_READY` требует PRD artifact.
+- Planner может использовать adversarial spec review, но `PLAN_APPROVED` требует plan/brief/tasklist.
+- Implementer может использовать TDD, systematic debugging и `/execute-plan`, но только для approved batch.
+- Reviewer может использовать code-reviewer как pre-review, но `REVIEW_OK` требует reviewer artifact.
+- Critical lane всегда сохраняет security-reviewer.

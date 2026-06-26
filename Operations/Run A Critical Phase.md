@@ -20,6 +20,17 @@
 - Предположения, связанные с безопасностью, должны быть явно указаны в плане
 - Ревьюер должен подготовить фазу к проверке безопасности
 
+
+## Superpowers в Critical lane
+
+Superpowers разрешен, но стандарт осторожности выше:
+
+- Adversarial Spec Review обязателен перед `PLAN_APPROVED`.
+- `/execute-plan` разрешен только для маленького approved batch.
+- code-reviewer может быть pre-review, но не заменяет reviewer.
+- Никакой Superpowers output не заменяет security-reviewer.
+- Любое новое security assumption должно вернуться в plan/brief до реализации.
+
 ## Поток выполнения
 
 ```text

@@ -36,6 +36,7 @@
 - [[Runtime/Hooks Map]] — все хуки Claude с назначением, режимом, оптимизацией
 - [[Runtime/Skills Reference]] — все навыки `/aidd-*`
 - [[Runtime/External Skills]] — внешние skill-паки Flutter/Dart и их интеграция в гейты
+- [[Runtime/Superpowers Overlay]] — мягкая интеграция Superpowers с AIDD gates
 - [[Runtime/Agents Reference]] — 7 ролей агентов и их контракты
 - [[Runtime/MCP Integration]] — детерминированный тулинг через MCP-серверы
 - [[Runtime/Team Mode]] — когда и как включать мультиагентную оркестрацию
