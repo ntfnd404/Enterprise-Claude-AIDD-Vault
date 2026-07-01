@@ -153,6 +153,14 @@ For the full state-stream vs event-bus decision matrix, see `docs/project/bloc-c
 
 All concrete action classes end with `Action`, symmetric with `Bloc / Event / State`. Example: `FeatureErrorOccurredAction`, `FeatureSendFailedAction`.
 
+All concrete BLoC input classes end with `Event`; all state classes end with `State`. Each BLoC uses the classic aggregate files `*_bloc.dart`, `*_event.dart`, `*_state.dart`, and optional `*_action.dart`. All concrete types of the same category live in that category file; `events/` and `actions/` subdirectories are forbidden. UI commands are public; platform callbacks and internal async results remain private library events.
+
+### Application events versus domain events
+
+- `AppEvent` is an in-process cross-feature notification carried by `AppEventBus`.
+- Domain events belong inside their bounded-context package and end with `DomainEvent`.
+- Presentation and runtime lifecycle notifications must not be named domain events.
+
 ---
 
 ## Layered Error Handling
@@ -586,3 +594,12 @@ Any change to a package's layer structure — subfolder add, remove, or rename u
 
 - Use **exact versions**: `solana: 0.32.0+1`, not `^0.32.0+1`.
 - List dependencies alphabetically within each group in `pubspec.yaml`.
+
+## DDD Package Boundaries And Redaction
+
+- Bounded contexts own their language; avoid shared mutable core-domain packages.
+- Consumer contexts define ports; adapter packages implement them.
+- DDD/application packages must not import `package:flutter/*`.
+- Runtime packages may depend on Flutter plugins only for the runtime they own.
+- Secret-bearing DTOs and value objects must provide redacted diagnostics.
+- Raw external exceptions must not be shown to users or logged without redaction.

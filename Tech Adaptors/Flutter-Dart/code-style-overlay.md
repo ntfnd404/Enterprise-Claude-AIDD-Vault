@@ -27,60 +27,26 @@ These rules are appended to `docs/project/code-style-guide.md` when the Flutter-
 
 ## Class Member Ordering
 
-Flutter framework convention (verified in `EdgeInsets`, `Container`, `TextButton` source):
+The adaptor uses the enforceable DCM 1.38 default order.
 
-1. Constructors (production first, then named, factory, then `@visibleForTesting`)
-2. Static const / static final fields
-3. Instance fields — final, then late, then nullable (public before private within each)
-4. Getters / computed properties
-5. Public methods
-6. Dispose / close
-7. Private methods
+Regular classes: public fields, private fields, public/private getters and setters, constructors, public methods, private methods.
 
-Constructors first, static fields second, instance fields last. This matches DCM `member-ordering`.
+Widgets: constructors, named constructors, const fields, static methods, final fields, mutable fields, `initState`, private methods, overridden public methods, `build`.
 
-```dart
-// ❌
-class Foo {
-  static const _timeout = 30; // static before constructor — wrong
-  const Foo();
-  final String _id;
-}
+BLoCs follow the regular-class order: dependencies and subscriptions, getters, constructor, public lifecycle methods, private handlers.
 
-// ✅
-class Foo {
-  const Foo();
-  static const _timeout = 30; // static after constructor
-  final String _id;            // instance fields last
-}
-```
+### BLoC Aggregate Files
 
-### Widget Member Ordering
+Use `feature_bloc.dart`, `feature_event.dart`, `feature_state.dart`, and `feature_action.dart` when actions exist. Keep every concrete Event in the single `*_event.dart` file, every State in `*_state.dart`, and every Action in `*_action.dart`. Do not create per-event files or `events/` and `actions/` subdirectories. Concrete names still end with `Event`, `State`, and `Action`; internal callback Events remain private library members.
 
-1. `const` / `final` fields
-2. Constructors
-3. `var` / mutable fields
-4. `initState`
-5. `didChangeDependencies`
-6. `didUpdateWidget`
-7. `build`
-8. `dispose`
-9. Public methods
-10. Private methods
-
-### BLoC Member Ordering
-
-1. Final repository/service fields
-2. Constructor with `super.initialState` + `on<>` registrations
-3. Private fields (subscriptions)
-4. Event handlers (private, `_onEventName`)
-5. `close` override
+The IDE and AIDD gate must resolve the same DCM version and configuration. Do not document a custom order that the installed DCM version does not enforce.
 
 ## Type Safety
 
 - **Always** declare return types — never omit
 - **Always** use `final` for non-reassigned locals
 - **Always** use `const` for compile-time constants
+- **Always** declare `const` constructors for immutable classes and use `const` invocations when all arguments are compile-time constants
 - **Never** use `var` when type is not obvious from the right side
 - **Never** use `dynamic` — use `Object` or `Object?`
 

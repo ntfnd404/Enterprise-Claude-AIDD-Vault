@@ -84,3 +84,7 @@ QA_PASS              → flutter-add-integration-test, dart-collect-coverage (Cr
 ## Superpowers
 
 Superpowers — это не Flutter/Dart skill-pack, а Claude Code plugin с общей методикой разработки. Он может помогать в brainstorming, TDD, systematic debugging, `/execute-plan`, pre-review и skill authoring. AIDD gates win over external skills and plugins: Superpowers не заменяет PRD, plan, reviewer, security-reviewer или QA.
+
+## DDD And Security Review Aids
+
+External architecture/security aids may be used for bounded-context, package-boundary, and redaction analysis. They are advisory only: AIDD artifacts, project conventions, reviewer, security-reviewer, and QA remain authoritative.

@@ -33,8 +33,11 @@ flutter analyze --fatal-infos --fatal-warnings
 
 ```bash
 # DCM is a separate CLI tool — Dart MCP analyze_files does NOT run DCM rules
-if command -v metrics &>/dev/null; then
-  metrics analyze lib/ packages/
+if command -v dcm &>/dev/null; then
+  dcm analyze lib/ packages/ test/ tool/ --fatal-style --fatal-warnings
+else
+  echo "FAIL: dcm is required but not installed" >&2
+  exit 1
 fi
 ```
 
@@ -71,12 +74,13 @@ flutter analyze --fatal-infos --fatal-warnings
 echo "PASS"
 
 # 3. DCM
-if command -v metrics &>/dev/null; then
+if command -v dcm &>/dev/null; then
   echo "--- DCM ---"
-  metrics analyze lib/ packages/
+  dcm analyze lib/ packages/ test/ tool/ --fatal-style --fatal-warnings
   echo "PASS"
 else
-  echo "--- DCM: SKIPPED (metrics not installed) ---"
+  echo "FAIL: dcm is required but not installed" >&2
+  exit 1
 fi
 
 # 4. Test

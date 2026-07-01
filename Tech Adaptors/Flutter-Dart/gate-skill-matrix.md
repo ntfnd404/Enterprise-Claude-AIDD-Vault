@@ -56,3 +56,8 @@
 | Перед официальным ревью | code-reviewer | Pre-review, не `REVIEW_OK` |
 
 Superpowers не является gate closer. AIDD roles and artifacts remain authoritative.
+
+## DDD / Security Batch Triggers
+
+- DDD/package-boundary changes: use architecture review aids plus static analysis; Critical when trust boundaries move.
+- Secrets/redaction/storage/crypto changes: Critical lane; security-reviewer remains mandatory.
