@@ -33,6 +33,7 @@ Every file created by this skill MUST be read from the vault first and copied as
 | `.claude/bin/aidd_validate.sh` | `<VAULT>/Templates/Runtime/bin/aidd_validate.sh` |
 | `.claude/settings.json` | `<VAULT>/Templates/Runtime/settings.json` |
 | `docs/project/workflow.md` | `<VAULT>/Templates/Project Docs/workflow.md` |
+| `docs/project/roadmap.md` | `<VAULT>/Templates/Project Docs/roadmap.md` |
 | `docs/project/superpowers-overlay.md` | `<VAULT>/Templates/Project Docs/superpowers-overlay.md` |
 | `docs/project/conventions.md` | `<VAULT>/Templates/Project Docs/conventions.md.stub` |
 | `docs/project/code-style-guide.md` | `<VAULT>/Templates/Project Docs/code-style-guide.md.stub` |

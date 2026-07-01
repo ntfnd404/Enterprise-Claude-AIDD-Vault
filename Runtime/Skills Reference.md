@@ -53,14 +53,15 @@
 
 **Синтаксис:**
 ```
-/aidd-new-ticket <TICKET>
+/aidd-new-ticket <TICKET> [BL-NNN]
 ```
 
 **Что делает:**
-1. Создаёт `docs/<TICKET>/.active_ticket` с идентификатором тикета
-2. Создаёт `docs/<TICKET>/idea-<TICKET>.md` из шаблона idea
-3. Создаёт `docs/<TICKET>/tasklist-<TICKET>.md` из шаблона tasklist
-4. Отчитывается о созданных файлах
+1. Проверяет planned ticket или backlog item в `docs/project/roadmap.md`
+2. Переводит работу в `In-flight`
+3. Создаёт `docs/<TICKET>/.active_ticket` с идентификатором тикета
+4. Создаёт idea и tasklist из шаблонов
+5. Обновляет `Last reviewed` и rolling change log
 
 **После создания:** заполнить idea-документ разделами Problem, Business Goal, Scope, Non-goals, Dependencies, Acceptance Criteria, Lane.
 
@@ -198,14 +199,17 @@
 3. Запускает `/aidd-validate`
 4. Проверяет, что tasklist полностью зелёный
 5. Определяет долгосрочные знания для продвижения в `docs/project/`
-6. Проверяет, что `docs/<TICKET>/` исключена из мержа
-7. Отчитывается о готовности к релизу
+6. Проверяет, что все carry-forwards зарегистрированы в roadmap
+7. Перемещает ticket из `In-flight` в `Completed` с durable reference
+8. Проверяет, что `docs/<TICKET>/` исключена из мержа
+9. Отчитывается о готовности к релизу
 
 **Чеклист продвижения:**
 - Новые постоянные правила -> `docs/project/conventions.md`
 - Архитектурные решения -> `docs/project/adr/`
 - Улучшения процесса -> `docs/project/workflow.md` или шаблоны
 - Улучшения валидатора -> `.claude/bin/aidd_validate.sh`
+- Deferred work -> `docs/project/roadmap.md`
 
 **Порождаемые агенты:** нет
 **Читаемые артефакты:** `.active_ticket`, все phase/qa/review артефакты, tasklist

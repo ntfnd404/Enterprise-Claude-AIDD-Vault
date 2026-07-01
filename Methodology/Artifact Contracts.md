@@ -108,6 +108,17 @@ Owner: <role name>
 
 Шаблоны: `Templates/Project Docs/vision.md` и `Templates/Project Docs/roadmap.md` (пустые scaffolds, английские, чтобы проект мог скопировать в свой репо без перевода).
 
+Roadmap является единственным durable backlog. Новая незапланированная работа
+получает `BL-NNN`; при старте ей назначается ticket ID и запись меняется на
+`<TICKET> (from BL-NNN)`. Один ведущий ID может находиться только в одной
+lifecycle-секции. Завершённые записи хранят outcome и durable PR/merge/commit
+reference.
+
+Roadmap не ссылается на `docs/<TICKET>/`: feature workspace существует только
+в рабочей ветке и не является постоянным артефактом. Перед shipment все
+отложенные findings из plan/review/security/QA должны быть зарегистрированы в
+roadmap, иначе работа будет потеряна при очистке workspace.
+
 ## Структура рабочего пространства фичи
 
 ```

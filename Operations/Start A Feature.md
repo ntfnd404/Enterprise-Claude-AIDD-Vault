@@ -1,23 +1,33 @@
 # Start A Feature
 
-## Шаг 1: Создать ветку
+## Шаг 1: Выбрать работу из roadmap
+
+В `docs/project/roadmap.md`:
+
+- выберите planned ticket; или
+- назначьте ticket ID элементу `BL-NNN`.
+
+Одна работа не может одновременно находиться в нескольких lifecycle-секциях.
+
+## Шаг 2: Создать ветку
 
 ```bash
 git checkout -b <TICKET>-<description>
 ```
 
-## Шаг 2: Создать рабочее пространство
+## Шаг 3: Создать рабочее пространство
 
 ```text
-/aidd-new-ticket <TICKET>
+/aidd-new-ticket <TICKET> [BL-NNN]
 ```
 
 Создаёт:
+- перевод roadmap-записи в `In-flight`
 - `docs/<TICKET>/.active_ticket`
 - `docs/<TICKET>/idea-<TICKET>.md`
 - `docs/<TICKET>/tasklist-<TICKET>.md`
 
-## Шаг 3: Заполнить идею
+## Шаг 4: Заполнить идею
 
 Обязательные поля:
 - `Lane` — Professional или Critical
@@ -29,7 +39,7 @@ git checkout -b <TICKET>-<description>
 - `Dependencies` — что должно существовать заранее
 - `Acceptance Criteria` — когда считается готовым
 
-## Шаг 4: Выбрать полосу (Lane)
+## Шаг 5: Выбрать полосу (Lane)
 
 | Lane | Когда использовать |
 |---|---|
@@ -39,7 +49,7 @@ git checkout -b <TICKET>-<description>
 
 Если не уверены — выбирайте Critical. См. [[../Methodology/Lanes]].
 
-## Шаг 5: Построить каркас фазы
+## Шаг 6: Построить каркас фазы
 
 Маршрутизация через подготовительных агентов:
 

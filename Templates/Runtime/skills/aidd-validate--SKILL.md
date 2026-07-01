@@ -29,7 +29,8 @@ Optional `--quick` for the fast pre-check (file existence + template metadata on
 ## What the validator checks
 
 ### File existence
-- Shared docs: `CLAUDE.md`, `AGENTS.md`, `docs/README.md`, `docs/project/workflow.md`
+- Shared docs: `CLAUDE.md`, `AGENTS.md`, `docs/README.md`,
+  `docs/project/workflow.md`, `docs/project/roadmap.md`
 - Hook files: `settings.json`, all hook scripts in `.claude/hooks/`, `aidd_validate.sh`
 - Agent files: all 7 agents in `.claude/agents/` (Standard tier)
 - Template files: all 10+ templates in `docs/project/templates/`
@@ -56,6 +57,12 @@ Each workflow skill directory must have a `SKILL.md` with:
 - No legacy workspace paths (`docs/feature/`) in shared docs, agents, or skills.
 - No legacy slash-command names (`/new-ticket`, `/new-phase`, etc. without the `aidd-` prefix).
 - No unsupported frontmatter fields (`compatibility:` in skills, `color:` in agents).
+
+### Roadmap contract
+- `Last reviewed` uses `YYYY-MM-DD`.
+- Completed, in-flight, planned, deferred, and change-log sections exist.
+- A leading ticket or backlog identifier appears in only one entry.
+- Roadmap entries never link to branch-local `docs/<TICKET>/` workspaces.
 
 ### Active feature docs (warnings)
 For every `.active_ticket` file under `docs/`:

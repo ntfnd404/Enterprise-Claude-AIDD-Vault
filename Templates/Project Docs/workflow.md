@@ -47,6 +47,24 @@ IDEA_READY → PRD_READY → RESEARCH_DONE → VISION_APPROVED → PLAN_APPROVED
 - Show diff
 - Stop on meaningful boundary
 
+## Roadmap And Backlog
+
+`docs/project/roadmap.md` is the durable source of truth for completed,
+in-flight, planned, and deferred work. Ticket workspaces under `docs/<TICKET>/`
+are temporary branch-local execution artifacts and must never be linked from
+the roadmap.
+
+- New unscheduled work receives a `BL-NNN` identifier.
+- Starting a backlog item assigns a ticket and records
+  `<TICKET> (from BL-NNN)` in `In-flight`.
+- `/aidd-new-ticket` moves planned work to `In-flight`.
+- `/aidd-ship-feature` moves gated work to `Completed` with a durable merge,
+  PR, or commit reference.
+- Cancelled work moves to `Deferred / open items` with a reason.
+- Out-of-scope findings must be registered before the current ticket ships.
+- Every edit updates `Last reviewed` and `Last 3 changes`.
+- A ticket or backlog ID may appear in only one lifecycle section.
+
 
 ## External Execution Overlays
 
@@ -66,6 +84,7 @@ not `REVIEW_OK`. Critical phases still require `security-reviewer`.
 ## Documentation
 
 - `docs/project/` — persistent truth (conventions, style, ADR, templates)
+- `docs/project/roadmap.md` — durable ticket and backlog lifecycle
 - `docs/<TICKET>/` — feature workspace (branch-local, cleaned before merge)
 
 ## Workflow Version

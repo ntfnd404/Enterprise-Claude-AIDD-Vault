@@ -47,6 +47,7 @@ shared_docs=(
   "CLAUDE.md"
   "AGENTS.md"
   "docs/README.md"
+  "docs/project/roadmap.md"
   "docs/project/workflow.md"
 )
 
@@ -109,6 +110,39 @@ for path in \
   "${extra_template_files[@]}"; do
   require_file "${path}"
 done
+
+# ---------------------------------------------------------------------------
+# 1a. Durable roadmap contract
+# ---------------------------------------------------------------------------
+
+roadmap_path="docs/project/roadmap.md"
+if [[ -f "${roadmap_path}" ]]; then
+  require_pattern "${roadmap_path}" "^Last reviewed: [0-9]{4}-[0-9]{2}-[0-9]{2}$"
+  require_pattern "${roadmap_path}" "^## Completed tickets$"
+  require_pattern "${roadmap_path}" "^## In-flight tickets$"
+  require_pattern "${roadmap_path}" "^## Planned$"
+  require_pattern "${roadmap_path}" "^## Deferred / open items$"
+  require_pattern "${roadmap_path}" "^## Last 3 changes$"
+
+  duplicate_roadmap_ids=$(
+    grep -E '^- ([A-Z][A-Z0-9]*-[0-9]+|BL-[0-9]{3})([^0-9]|$)' "${roadmap_path}" \
+      | sed -E 's/^- (([A-Z][A-Z0-9]*-[0-9]+|BL-[0-9]{3})).*/\1/' \
+      | sort \
+      | uniq -d \
+      || true
+  )
+  if [[ -n "${duplicate_roadmap_ids}" ]]; then
+    fail "roadmap identifiers appear in multiple entries: ${duplicate_roadmap_ids}"
+  fi
+
+  ticket_workspace_links=$(
+    grep -nE '\]\([^)]*docs/[A-Z][A-Z0-9]*-[0-9]+/' "${roadmap_path}" \
+      || true
+  )
+  if [[ -n "${ticket_workspace_links}" ]]; then
+    fail "roadmap links to branch-local ticket workspaces:\n${ticket_workspace_links}"
+  fi
+fi
 
 # ---------------------------------------------------------------------------
 # 2. Template metadata contract

@@ -8,6 +8,8 @@
 - Все Critical-фазы имеют проверки безопасности
 - Таск-лист полностью зелёный
 - Валидатор зелёный: `/aidd-validate`
+- Тикет ровно один раз находится в `In-flight` в project roadmap
+- Все отложенные findings зарегистрированы как planned/deferred roadmap items
 
 ## Команда отправки
 
@@ -23,6 +25,9 @@
    - Улучшения процесса — `workflow.md` или шаблоны
 2. **Убедитесь**, что `docs/<TICKET>/` исключена из мержа (локальное рабочее пространство ветки)
 3. **Обновите** conventions, workflow или шаблоны, если фича изменила процессные знания
+4. **Переместите** ticket в `Completed` через `/aidd-ship-feature`; храните
+   outcome и durable commit/PR/merge reference, но не ссылку на
+   `docs/<TICKET>/`
 
 ## Что переносить
 
@@ -31,6 +36,7 @@
 - Переиспользуемые чек-листы
 - Улучшения валидатора
 - Обновления шаблонов
+- Deferred work и carry-forwards в `docs/project/roadmap.md`
 
 ## Что НЕ переносить
 

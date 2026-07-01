@@ -22,6 +22,8 @@ Before running this skill, all phases must satisfy:
 - every phase has `QA_PASS`
 - every `Critical` phase has `SECURITY_REVIEW_OK`
 - validator passes cleanly
+- the ticket appears exactly once under `## In-flight tickets` in
+  `docs/project/roadmap.md`
 
 ## Steps
 
@@ -38,8 +40,21 @@ Before running this skill, all phases must satisfy:
    - Glob security reviews: `docs/<TICKET>/security/<TICKET>-phase-*.md`
    - verify each Critical phase has `SECURITY_REVIEW_OK`
 7. Run `.claude/bin/aidd_validate.sh` — must pass with 0 failures.
-8. Read `docs/<TICKET>/metrics.log` if it exists.
-9. Produce three outputs:
+8. Read review, security, and QA artifacts for unresolved follow-ups.
+   - Every intentionally deferred follow-up must already have a `BL-NNN`
+     entry in `## Planned` or `## Deferred / open items`.
+   - Abort rather than losing an out-of-scope finding.
+9. Read `docs/<TICKET>/metrics.log` if it exists.
+10. Move `<TICKET>` from `## In-flight tickets` to
+    `## Completed tickets`.
+    - Record a one-line outcome.
+    - Record the merge target and current commit, PR, or merge reference when
+      available.
+    - Never link to `docs/<TICKET>/`.
+    - Update `Last reviewed` and prepend a `Last 3 changes` entry, retaining at
+      most three entries.
+11. Run `.claude/bin/aidd_validate.sh` again after the roadmap transition.
+12. Produce three outputs:
 
 ### Output 1: Release readiness checklist
 
@@ -68,6 +83,7 @@ Promote durable learnings from the feature workspace into persistent docs:
 | Runtime instruction change | `CLAUDE.md` |
 | Workflow improvement | `docs/project/workflow.md` or templates |
 | Validator improvement | `.claude/bin/aidd_validate.sh` |
+| Deferred or transferred work | `docs/project/roadmap.md` |
 
 ### Output 3: Retrospective
 
@@ -81,6 +97,8 @@ Based on `metrics.log` and phase summaries:
 
 - `docs/<TICKET>/` stays in the feature branch and is never merged into main.
 - Durable learnings (ADRs, convention updates, style guide updates) must live in `docs/project/`.
+- Durable work status and carry-forwards must live in
+  `docs/project/roadmap.md`; never link the roadmap to ticket workspace files.
 - Confirm `.gitignore` or merge strategy excludes `docs/<PREFIX>-*/` from main.
 
 ## Error handling
@@ -89,6 +107,10 @@ Based on `metrics.log` and phase summaries:
 - If validator fails: report failures and abort.
 - If `.active_ticket` not found: abort.
 - If a Critical phase lacks security review: list missing reviews and abort.
+- If the ticket is not uniquely `In-flight`, or a deferred follow-up is absent
+  from the roadmap: report and abort.
+- If post-transition validation fails: restore the ticket to `In-flight` and
+  restore the previous roadmap change log before reporting.
 
 ## Quality gate
 
