@@ -60,7 +60,7 @@
 | `RESEARCH_DONE` | Факты кодовой базы и риски собраны |
 | `VISION_APPROVED` | Архитектура фичи зафиксирована |
 | `PLAN_APPROVED` | Реализация решена полностью |
-| `TASKLIST_READY` | Implementer может начинать работу |
+| `TASKLIST_READY` | Планирование завершено; до кода требуется Git checkpoint спецификации |
 | `IMPLEMENT_STEP_OK` | Пакет завершён и проверки пройдены |
 | `REVIEW_OK` | Reviewer не блокирует |
 | `SECURITY_REVIEW_OK` | Гейт безопасности пройден (только Critical) |
@@ -69,6 +69,16 @@
 | `DOCS_UPDATED` | Долгосрочные знания синхронизированы в `docs/project/` |
 
 ## Ключевое правило
+
+Между `TASKLIST_READY` и первым изменением кода находится обязательная
+Git-граница: владелец принимает полный specification-only diff и отдельно
+разрешает commit `aidd(<TICKET>): approve phase <N> specification baseline`. Это не новый
+AIDD status. Без checkpoint implementer останавливается.
+
+Если принятые требования, архитектура, scope или implementation design меняются
+позже, affected code приостанавливается до review и отдельного commit
+`aidd(<TICKET>): amend phase <N> specification baseline`. Обновления execution state в
+brief/tasklist не считаются дрифтом immutable-спецификации.
 
 **Implementer — основная роль с правом записи.** Все остальные роли работают преимущественно на чтение — они создают артефакты (PRD, research, plan, review, QA), но не изменяют исходный код.
 

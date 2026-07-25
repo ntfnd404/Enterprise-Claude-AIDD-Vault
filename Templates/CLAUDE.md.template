@@ -40,6 +40,11 @@ Runtime sources of truth:
 4. Read `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md`
 5. Check lane and gate requirements in the current phase
 6. Propose the next batch and wait for explicit approval
+7. Before the first implementation batch, verify that the owner accepted the
+   complete specification-only diff and that the current branch contains
+   `aidd(<TICKET>): approve phase <N> specification baseline`
+8. Verify immutable specification artifacts are clean; if they changed, stop
+   until a reviewed `aidd(<TICKET>): amend phase <N> specification baseline` commit exists
 
 ---
 

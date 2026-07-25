@@ -47,6 +47,32 @@ IDEA_READY → PRD_READY → RESEARCH_DONE → VISION_APPROVED → PLAN_APPROVED
 - Show diff
 - Stop on meaningful boundary
 
+## Specification Baseline Before Implementation
+
+`TASKLIST_READY` completes the AIDD planning gates, but does not by itself
+authorize source-code changes. Before the first implementation batch:
+
+1. Show the complete specification-only diff: idea, PRD, critique, research,
+   vision, plan, phase brief, and tasklist. The review is cumulative from the
+   feature branch point, not only the current uncommitted diff.
+2. Obtain explicit owner acceptance of that specification.
+3. Obtain separate permission to create a Git commit.
+4. Commit the accepted specification before changing source code, using:
+   `aidd(<TICKET>): approve phase <N> specification baseline`. The checkpoint commit may
+   contain only specification files, or be empty when the accepted artifacts
+   are already present in earlier preparation commits.
+5. Verify that the immutable specification artifacts are clean, then start the
+   approved implementation batch.
+
+If commit permission is not granted, implementation pauses. If accepted
+requirements, architecture, scope, or the implementation design changes later,
+review and commit the amendment separately with
+`aidd(<TICKET>): amend phase <N> specification baseline` before continuing affected code.
+Execution-state updates to the phase brief and tasklist may remain part of
+implementation batches. Never mix the initial specification baseline and its
+first implementation changes in one commit. Push permission remains separate
+from commit permission.
+
 ## Roadmap And Backlog
 
 `docs/project/roadmap.md` is the durable source of truth for completed,

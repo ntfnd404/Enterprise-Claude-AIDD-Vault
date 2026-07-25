@@ -8,6 +8,8 @@
 
 - Фаза находится в состоянии `TASKLIST_READY`
 - `phase`, `plan`, `prd` готовы
+- В текущей ветке есть owner-approved commit
+  `aidd(<TICKET>): approve phase <N> specification baseline`
 
 ## Перед началом
 
@@ -50,6 +52,9 @@ Superpowers можно использовать только внутри approv
 - TDD рекомендуется для поведения, use cases, BLoC, codecs, gateways и regression fixes.
 - Systematic debugging применяется для runtime failures и flaky tests.
 - code-reviewer — pre-review, не `REVIEW_OK`.
+
+Если immutable-спецификация изменилась, affected implementation
+приостанавливается до отдельного owner-approved amendment commit.
 
 В конце батча summary должен указать docs-drift result: какие документы обновлены или почему update не нужен.
 

@@ -61,7 +61,10 @@ git checkout -b <TICKET>-<description>
 
 ## Правило
 
-Не начинайте реализацию, пока не достигнуты `PLAN_APPROVED` и `TASKLIST_READY`.
+Не начинайте реализацию, пока не достигнуты `PLAN_APPROVED` и
+`TASKLIST_READY`, владелец не принял полный specification-only diff и не создан
+отдельный commit `aidd(<TICKET>): approve phase <N> specification baseline`.
+Checkpoint подробно описан в [[Prepare A Phase]].
 
 ## Далее
 

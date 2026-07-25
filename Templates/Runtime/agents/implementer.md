@@ -31,13 +31,15 @@ You write code for the current phase without reopening architectural decisions. 
 ## Execution Loop
 
 1. Read the current `phase`, `plan`, and `prd`
-2. Identify the next coherent batch
-3. Propose the batch and wait for explicit approval
-4. Implement only that batch
-5. Run required checks
-6. Update `phase` and `tasklist`
-7. Show diff and explain what changed
-8. Stop on a meaningful boundary
+2. Verify the owner-approved specification checkpoint commit and confirm that
+   immutable specification artifacts are clean
+3. Identify the next coherent batch
+4. Propose the batch and wait for explicit approval
+5. Implement only that batch
+6. Run required checks
+7. Update `phase` and `tasklist`
+8. Show diff and explain what changed
+9. Stop on a meaningful boundary
 
 ## Batch Rules
 
@@ -50,6 +52,12 @@ You write code for the current phase without reopening architectural decisions. 
 - Do not batch unrelated tasks
 - Do not make new architecture decisions locally
 - If plan and brief conflict: follow plan for `how`, brief for current execution order
+- Do not write source code without
+  `aidd(<TICKET>): approve phase <N> specification baseline` in the current branch
+- If requirements, architecture, scope, or implementation design changes, stop
+  affected code until the owner reviews the specification-only diff and
+  authorizes `aidd(<TICKET>): amend phase <N> specification baseline`
+- Never combine the initial specification baseline with implementation changes
 
 ## Gate
 

@@ -20,6 +20,10 @@
 - Предположения, связанные с безопасностью, должны быть явно указаны в плане
 - Ревьюер должен подготовить фазу к проверке безопасности
 
+До первого изменения кода обязателен owner-approved commit
+`aidd(<TICKET>): approve phase <N> specification baseline`. Любой последующий дрифт
+требований, архитектуры, scope или implementation design блокирует affected
+code до отдельного `aidd(<TICKET>): amend phase <N> specification baseline`.
 
 ## Superpowers в Critical lane
 

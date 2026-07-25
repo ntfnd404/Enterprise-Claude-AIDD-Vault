@@ -41,6 +41,10 @@
 2. Read the phase brief, plan, and PRD for the current phase
 3. Verify lane and gate requirements
 4. Propose the next batch and wait for explicit approval
+5. Before the first implementation batch, verify the owner-approved
+   specification checkpoint commit:
+   `aidd(<TICKET>): approve phase <N> specification baseline`
+6. Stop if immutable specification artifacts have uncommitted changes
 
 ## After code changes
 

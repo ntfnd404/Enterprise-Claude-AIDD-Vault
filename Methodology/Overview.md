@@ -51,6 +51,7 @@ IDEA_READY
 → VISION_APPROVED
 → PLAN_APPROVED
 → TASKLIST_READY
+→ specification checkpoint commit (Git boundary, not gate status)
 → IMPLEMENT_STEP_OK
 → REVIEW_OK
 → SECURITY_REVIEW_OK (только Critical)
@@ -61,6 +62,11 @@ IDEA_READY
 
 Каждый гейт является блокирующим. Следующая роль начинает работу только после прохождения текущего гейта.
 Подробнее см. [[Roles And Gates]].
+
+Перед первым изменением кода владелец принимает полный specification-only diff
+и отдельно разрешает commit `aidd(<TICKET>): approve phase <N> specification baseline`.
+Последующий смысловой дрифт спецификации требует отдельного reviewed amendment
+commit до продолжения затронутой реализации.
 
 ## Оптимизация с учётом токенов
 

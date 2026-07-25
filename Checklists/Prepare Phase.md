@@ -25,3 +25,12 @@
 
 - [ ] Гейт `PLAN_APPROVED` пройден
 - [ ] Гейт `TASKLIST_READY` пройден
+
+## Git checkpoint спецификации
+
+- [ ] Показан полный diff только спецификации: idea, PRD, critique, research, vision, plan, brief и tasklist
+- [ ] Владелец явно принял спецификацию
+- [ ] Получено отдельное разрешение на commit
+- [ ] Создан commit `aidd(<TICKET>): approve phase <N> specification baseline`
+- [ ] Immutable-артефакты спецификации не имеют staged, unstaged или untracked изменений
+- [ ] Реализация не начата до завершения checkpoint

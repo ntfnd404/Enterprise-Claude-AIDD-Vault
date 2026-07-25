@@ -47,6 +47,33 @@
 | `plan/<TICKET>-phase-N.md` | Planner |
 | `phase/<TICKET>/phase-N.md` | Planner |
 
+## Git checkpoint спецификации
+
+После `PLAN_APPROVED` и `TASKLIST_READY`, но до первого изменения исходного
+кода:
+
+1. Покажите полный diff только спецификации: idea, PRD, critique, research,
+   vision, plan, phase brief и tasklist. Показывайте совокупный diff от точки
+   ответвления feature branch, а не только текущие незакоммиченные изменения.
+2. Получите явное принятие спецификации владельцем.
+3. Отдельно запросите разрешение на commit.
+4. Создайте commit:
+   `aidd(<TICKET>): approve phase <N> specification baseline`. Он содержит только файлы
+   спецификации либо может быть пустым, если принятые артефакты уже находятся в
+   отдельных preparation commits.
+5. Убедитесь, что immutable-артефакты спецификации (`idea`, `prd`, `critique`,
+   `research`, `vision`, `plan`) чисты.
+
+Если разрешение на commit не получено, реализация приостанавливается. Если
+позже меняются принятые требования, архитектура, scope или design реализации,
+сначала покажите specification-only diff и создайте отдельно одобренный commit
+`aidd(<TICKET>): amend phase <N> specification baseline`. Обновления состояния выполнения
+в brief/tasklist могут входить в implementation commits.
+
+Это обязательная Git-граница, а не новый gate status. Первоначальную
+спецификацию и первые изменения кода нельзя объединять в один commit. Разрешение
+на push всегда запрашивается отдельно.
+
 ## Оптимизация токенов
 
 - `/aidd-start-phase` использует `effort: medium` — сбалансированный режим для чтения контекста фазы
@@ -64,6 +91,7 @@
 Не переходите к реализации, пока:
 - Не установлен `PLAN_APPROVED`
 - Не установлен `TASKLIST_READY`
+- Не создан и не проверен Git checkpoint спецификации
 
 ## Далее
 

@@ -20,6 +20,15 @@ Reference for all AIDD agents in this project.
 - Each role reads only its required artifacts
 - Project-specific rules live in `docs/project/conventions.md`
 - All agents read conventions at runtime
+- Before the first code change, show the complete specification-only diff,
+  obtain explicit owner acceptance, request separate commit permission, and
+  create `aidd(<TICKET>): approve phase <N> specification baseline`
+- If that checkpoint commit is absent, or immutable specification artifacts
+  have uncommitted changes, pause implementation
+- Later requirement, architecture, scope, or plan changes require a reviewed
+  `aidd(<TICKET>): amend phase <N> specification baseline` commit before affected code
+  continues
+- Never mix the initial specification baseline and implementation in one commit
 
 ## Artifact Flow
 
