@@ -1,68 +1,70 @@
-# Phase Flow Trivial
+# Trivial Fast Path
 
-> **Workflow Minor: 3.3** — короткий путь для узких правок без архитектурного влияния. Каноническое определение полосы — в [[../Methodology/Lanes]].
+> **Workflow Minor: 3.3** — пропорциональный путь для ограниченных
+> низкорисковых задач. Канонические границы полосы — в
+> [[../Methodology/Lanes]].
 
-## Когда использовать Trivial
+## Классификация и согласие
 
-Полоса Trivial применяется только для:
+Агент предлагает Fast Path проактивно, объясняет, почему scope ограничен,
+перечисляет пропускаемые и сохраняемые шаги и ждёт явного согласия владельца.
+По умолчанию используется Professional.
 
-- исправления опечаток (в комментариях, документации, строках UI);
-- переименований (переменная, приватный метод, локальный файл без публичного API);
-- мелких правок конфигурации (lint-правила, форматтер, не влияющие на поведение);
-- локальных правок в одном файле без архитектурного влияния.
+Fast Path запрещён при Critical trigger, неоднозначном или растущем scope,
+новой зависимости, schema/storage/public-contract изменении,
+production/deployment или external-resource mutation. Любой обнаруженный
+disqualifier останавливает работу до переклассификации.
 
-Источник истины — [[../Methodology/Lanes]]. Чек-лист входа должен пройти полностью; иначе откатываемся на Professional.
-
-## Поток
-
-```
-edit → review
-```
-
-Два шага. Нет PRD, нет research, нет плана, нет spec-critic, нет security-reviewer, нет QA-агента, нет фазового брифа.
-
-## Сценарий
-
-Фича: исправить опечатку в `README.md` — слово «retrun» → «return» в примере shell-команды.
-
-### Шаг 1: Edit
-
-Автор открывает файл, вносит правку, прогоняет минимальные проверки своего проекта (например, линтер или форматтер документации). Никаких артефактов в `docs/<TICKET>/` создавать не нужно.
-
-### Шаг 2: Review
-
-Один ревьюер читает diff (обычно один-два изменённых файла, <10 строк), подтверждает, что правка попадает под входные критерии Trivial, и аппрувит PR. Если ревьюер сомневается — PR немедленно переводится на Professional с созданием PRD.
-
-### Коммит
-
-Каждый Trivial-коммит должен нести trace-маркер:
-
-- префикс `trivial:` в заголовке коммита, либо
-- ссылку на issue/тикет в теле сообщения.
-
-Это правило аудита из [[../Methodology/Lanes]] — короткий путь остаётся прослеживаемым.
-
-Примеры заголовков:
+## Компактный workspace
 
 ```text
-trivial: fix typo in README.md
-trivial: rename local variable `tmp` → `decoded`
-trivial: tighten dart_code_metrics rule threshold (Closes #142)
+docs/<TICKET>/
+├── .active_ticket
+├── idea-<TICKET>.md
+├── tasklist-<TICKET>.md
+└── review/
+    └── <TICKET>-review.md
 ```
 
-## Когда НЕ использовать Trivial
+Phase/plan/PRD/research/vision/QA/security scaffolding не создаётся. Принятые
+Idea, tasklist и batch proposal образуют baseline без отдельного specification
+checkpoint.
 
-Откатывайтесь на Professional (или Critical, если применимо), если выполняется хотя бы одно условие:
+## Выполнение и проверки
 
-- меняется публичное поведение (API, контракт модуля, формат данных);
-- затронуто несколько модулей или пакетов;
-- есть риск регрессии (правка касается логики, не текста);
-- есть последствия для безопасности, приватности или хранилища.
+1. Выполнить один bounded batch.
+2. Запустить все focused checks из tasklist.
+3. Один раз успешно выполнить полный project gate до `REVIEW_OK`.
+4. Создать единственный канонический `review/<TICKET>-review.md`.
+5. Показать полный diff и sensitive-content review.
 
-При сомнениях — Professional. Trivial — это не «маленький быстрый способ обойти процесс», а узкая категория с чёткими границами.
+Если после review меняются функциональные или tooling-файлы, focused и полный
+gate выполняются заново. Чистый archive/roadmap closeout использует только
+formatting, full/quick validator, `git diff --check` и sensitive scan.
+
+## Owner-visible delivery
+
+1. **Delivery bundle:** точные commit message, branch, push target и draft PR.
+2. **Closeout bundle:** marker-free archive transition, commit, push, CI и
+   mark-ready.
+3. **Merge/cleanup bundle:** запрашивается отдельно; squash merge, проверка
+   `main` и post-merge CI, затем удаление только merged remote branch и снятие
+   upstream при сохранении локальной ветки.
+
+Каждый bundle перечисляет действия, targets, prerequisites и stop conditions.
+Diff/identity/SHA/CI drift прекращает оставшиеся действия и требует нового
+разрешения. Generic bundle никогда не разрешает инфраструктурную мутацию.
+
+## Shipment
+
+После draft PR marker удаляется, workspace переносится в
+`docs/archive/<TICKET>/`, archive index и roadmap обновляются в том же primary
+PR. Архив — историческое evidence; актуальные решения находятся в
+`docs/project/`.
 
 ## Ссылки
 
-- [[../Methodology/Lanes]] -- определение полос и входные критерии Trivial
-- [[Phase Flow Professional]] -- стандартный поток для большинства фаз
-- [[Phase Flow Critical]] -- расширенный поток с security review
+- [[../Methodology/Lanes]] — eligibility и reclassification
+- [[../Operations/Ship A Feature]] — primary-PR archive lifecycle
+- [[Phase Flow Professional]] — стандартный полный поток
+- [[Phase Flow Critical]] — поток с security review

@@ -17,9 +17,9 @@
 
 Затем маршрутизация:
 
-1. **Analyst** — пишет `prd/<TICKET>-phase-N.prd.md`
-2. **Researcher** — пишет `research/<TICKET>-phase-N.md`, обновляет `vision-<TICKET>.md` при необходимости
-3. **Planner** — пишет `plan/<TICKET>-phase-N.md` и `phase/<TICKET>/phase-N.md`
+1. **Analyst** — пишет `prd/<TICKET>-phase-N-prd.md`
+2. **Researcher** — пишет `research/<TICKET>-phase-N-research.md`, обновляет `vision-<TICKET>.md` при необходимости
+3. **Planner** — пишет `plan/<TICKET>-phase-N-plan.md` и `phase/<TICKET>-phase-N-brief.md`
 
 Когда все артефакты готовы:
 
@@ -41,11 +41,11 @@
 
 | Файл | Автор |
 |---|---|
-| `prd/<TICKET>-phase-N.prd.md` | Analyst |
-| `research/<TICKET>-phase-N.md` | Researcher |
+| `prd/<TICKET>-phase-N-prd.md` | Analyst |
+| `research/<TICKET>-phase-N-research.md` | Researcher |
 | `vision-<TICKET>.md` | Researcher |
-| `plan/<TICKET>-phase-N.md` | Planner |
-| `phase/<TICKET>/phase-N.md` | Planner |
+| `plan/<TICKET>-phase-N-plan.md` | Planner |
+| `phase/<TICKET>-phase-N-brief.md` | Planner |
 
 ## Git checkpoint спецификации
 

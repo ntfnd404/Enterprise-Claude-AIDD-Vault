@@ -67,7 +67,7 @@
 ## Отсутствует проверка безопасности в Critical
 
 - Полоса должна быть `Critical`
-- Файл `security/<TICKET>-phase-N.md` должен существовать
+- Файл `security/<TICKET>-phase-N-security.md` должен существовать
 - Без `SECURITY_REVIEW_OK` отправка заблокирована
 
 ## Хуки Team Mode не срабатывают

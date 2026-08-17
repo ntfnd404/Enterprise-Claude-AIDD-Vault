@@ -1,18 +1,86 @@
 # AGENTS.md
 
-Reference for all AIDD agents in this project.
+Codex entry point and reference for all AIDD agents in this project.
+
+## Tool Entry Points
+
+- Codex reads this `AGENTS.md` automatically.
+- Claude Code reads `CLAUDE.md` and uses the native `.claude/` runtime.
+- Both tools share the same durable sources of truth under `docs/project/`, the
+  same active ticket workspace under `docs/<TICKET>/`, and the same historical
+  completed-ticket archive under `docs/archive/<TICKET>/`.
+- `.claude/skills` and `.claude/hooks` are native Claude Code integrations.
+  When working in Codex, follow their equivalent documented steps explicitly;
+  do not assume Claude slash commands or hooks ran automatically.
+
+## Required Context
+
+Before changing code or project documentation:
+
+1. Read `docs/project/conventions.md`.
+2. Read `docs/project/workflow.md`.
+3. Read `docs/project/agent-runtime.md`.
+4. Locate `docs/*/.active_ticket`.
+5. Read the active ticket idea and tasklist.
+6. For Professional/Critical implementation, read the current phase brief,
+   plan, and PRD. For Trivial, confirm that no phase scaffolding exists.
+7. Confirm the current lane and required gates.
+
+If required Professional/Critical phase artifacts are missing or still placeholders, stop
+implementation and complete the appropriate analyst/researcher/planner work
+first.
+
+## Working Agreement
+
+- Work in batches of 2–5 related tasks.
+- Describe the next batch and wait for owner approval before implementation.
+- For Professional/Critical, after `PLAN_APPROVED` and `TASKLIST_READY`, show and obtain owner acceptance
+  of the complete specification-only diff, then request permission and create
+  a specification checkpoint commit before writing code. If permission is not
+  granted, pause implementation.
+- Commit later specification amendments separately before continuing affected
+  implementation; never mix the initial specification and implementation in
+  one commit.
+- Run the checks required by the active phase after changes.
+- Show `git status` and the complete relevant diff at every review boundary.
+- Leave changes unstaged until the owner has reviewed them.
+- Never run `git commit` or `git push` without the owner's explicit permission.
+  For Trivial only, one affirmative response to a displayed delivery or
+  closeout bundle counts as explicit permission for each exact commit/push/PR
+  action listed in that bundle; any drift invalidates the remaining authority.
+- Never delete local Git branches; retain them for historical inspection.
+- A remote feature branch may be deleted only after its merge into `main` has
+  been verified.
+- Never create or mutate deployment, production, data, GitHub, or other external resources
+  unless the approved ticket batch explicitly authorizes it.
+
+### Trivial Fast Path
+
+- Proactively identify a bounded low-risk task as a Fast Path candidate, state
+  which standard steps will be skipped and retained, and wait for owner approval.
+- Use only compact Idea, tasklist, and ticket-level review artifacts. Do not
+  create phase/plan/PRD/research/vision/QA/security scaffolding or a separate
+  specification checkpoint.
+- Registration and activation travel in the primary branch/PR; do not create a
+  roadmap-only PR.
+- Run focused checks plus one full project gate before review. After a pure
+  docs-only archive move, use the reduced closeout gate from the workflow.
+- Use only the exact delivery, closeout, and separately requested merge/cleanup
+  bundles defined in `docs/project/workflow.md`.
+- Stop and reclassify to Professional/Critical before continuing if scope grows,
+  risk is ambiguous, or any Fast Path disqualifier appears.
 
 ## Agent Summary
 
-| Agent | Gate | Tools |
-|---|---|---|
-| analyst | `IDEA_READY` → `PRD_READY` | Read, Glob, Grep, Write |
-| researcher | `PRD_READY` → `RESEARCH_DONE` | Read, Glob, Grep, Bash, Write |
-| planner | `RESEARCH_DONE` → `PLAN_APPROVED` | Read, Glob, Grep, Write |
-| implementer | `TASKLIST_READY` → `IMPLEMENT_STEP_OK` | Read, Write, Edit, Glob, Grep, Bash |
-| reviewer | `IMPLEMENT_STEP_OK` → `REVIEW_OK` | Read, Glob, Grep, Write |
-| security-reviewer | `REVIEW_OK` → `SECURITY_REVIEW_OK` | Read, Glob, Grep, Write |
-| qa | `REVIEW_OK` → `QA_PASS` | Read, Glob, Grep, Write |
+| Agent             | Gate                                   | Tools                               |
+| ----------------- | -------------------------------------- | ----------------------------------- |
+| analyst           | `IDEA_READY` → `PRD_READY`             | Read, Glob, Grep, Write             |
+| researcher        | `PRD_READY` → `RESEARCH_DONE`          | Read, Glob, Grep, Bash, Write       |
+| planner           | `RESEARCH_DONE` → `PLAN_APPROVED`      | Read, Glob, Grep, Write             |
+| implementer       | `TASKLIST_READY` → `IMPLEMENT_STEP_OK` | Read, Write, Edit, Glob, Grep, Bash |
+| reviewer          | `IMPLEMENT_STEP_OK` → `REVIEW_OK`      | Read, Glob, Grep, Write             |
+| security-reviewer | `REVIEW_OK` → `SECURITY_REVIEW_OK`     | Read, Glob, Grep, Write             |
+| qa                | `REVIEW_OK` → `QA_PASS`                | Read, Glob, Grep, Write             |
 
 ## Key Rules
 
@@ -20,17 +88,19 @@ Reference for all AIDD agents in this project.
 - Each role reads only its required artifacts
 - Project-specific rules live in `docs/project/conventions.md`
 - All agents read conventions at runtime
-- Before the first code change, show the complete specification-only diff,
-  obtain explicit owner acceptance, request separate commit permission, and
-  create `aidd(<TICKET>): approve phase <N> specification baseline`
-- If that checkpoint commit is absent, or immutable specification artifacts
-  have uncommitted changes, pause implementation
-- Later requirement, architecture, scope, or plan changes require a reviewed
-  `aidd(<TICKET>): amend phase <N> specification baseline` commit before affected code
-  continues
-- Never mix the initial specification baseline and implementation in one commit
+- Durable product and architecture decisions live in `docs/project/`
+- Active ticket workspaces are temporary execution artifacts, not durable truth
+- Completed ticket archives are historical evidence, not durable truth
 
 ## Artifact Flow
+
+Trivial:
+
+```text
+compact idea + tasklist → implementation → ticket review → primary-PR archive
+```
+
+Professional/Critical:
 
 ```
 idea (analyst)

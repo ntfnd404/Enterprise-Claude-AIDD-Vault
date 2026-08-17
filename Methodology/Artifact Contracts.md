@@ -18,9 +18,12 @@
 
 НЕ хранит: локальные для фазы рассуждения, одноразовые детали реализации, QA-отчёты для конкретных фич.
 
-### Слой фичи (`docs/<TICKET>/`)
+### Слой исполнения (`docs/<TICKET>/` → `docs/archive/<TICKET>/`)
 
-Локальный для ветки, очищается перед мержем. Хранит все артефакты фаз одной фичи.
+Во время работы хранит все артефакты одной фичи и единственный
+`.active_ticket`. При shipment marker удаляется, workspace переносится в
+постоянный исторический архив в primary PR. Архив не заменяет актуальную истину
+из `docs/project/`.
 
 ## Карта артефактов
 
@@ -32,14 +35,14 @@
 | **Vision** | Архитектура фичи, границы, долгосрочные решения | Чеклист выполнения |
 | **Plan** | Точные файлы, контракты, последовательность, крайние случаи | Повторённый бизнес-контекст |
 | **Brief** | Текущий пакет выполнения (пакет, ограничения, приёмка) | Полное обоснование дизайна |
-| **Review Summary** | Находки, отклонения, вердикт | Доказательства QA |
+| **Review** | Находки, отклонения, review rounds, вердикт | Доказательства QA |
 | **Security Review** | Находки безопасности, границы доверия, go/no-go | Общее стилевое ревью |
 | **QA** | Доказательства сценариев, покрытие, pass/fail | Переработка архитектуры |
 | **Tasklist** | Кросс-фазный прогресс, готовность к релизу | Проза плана |
 
 ## Поля метаданных (v3.2)
 
-Каждый артефакт v3.2 (idea, prd, plan, brief, research, qa, security_review, summary) обязан содержать в заголовке следующие строки:
+Каждый артефакт v3.2 (idea, prd, plan, brief, research, review, qa, security_review) обязан содержать в заголовке следующие строки:
 
 - `Workflow Version: 3` — мажорная версия, не меняется.
 - `Workflow Minor: 3.3` — минорная версия, отражает версию методологии (поставляется в AIDD v3.2).
@@ -114,10 +117,11 @@ Roadmap является единственным durable backlog. Новая н
 lifecycle-секции. Завершённые записи хранят outcome и durable PR/merge/commit
 reference.
 
-Roadmap не ссылается на `docs/<TICKET>/`: feature workspace существует только
-в рабочей ветке и не является постоянным артефактом. Перед shipment все
-отложенные findings из plan/review/security/QA должны быть зарегистрированы в
-roadmap, иначе работа будет потеряна при очистке workspace.
+Roadmap не ссылается напрямую на `docs/<TICKET>/` или
+`docs/archive/<TICKET>/`. Активный workspace после shipment становится
+marker-free историческим архивом; текущая истина остаётся в `docs/project/`.
+Перед shipment все отложенные findings из plan/review/security/QA должны быть
+зарегистрированы в roadmap.
 
 ## Структура рабочего пространства фичи
 
@@ -128,14 +132,20 @@ docs/<TICKET>/
 ├── vision-<TICKET>.md
 ├── tasklist-<TICKET>.md
 ├── metrics.log
-├── <TICKET>-phase-N-summary.md
-├── phase/phase-N.md
-├── plan/<TICKET>-phase-N.md
-├── prd/<TICKET>-phase-N.prd.md
-├── research/<TICKET>-phase-N.md
-├── qa/<TICKET>-phase-N.md
-└── security/<TICKET>-phase-N.md   (только Critical)
+├── phase/<TICKET>-phase-N-brief.md
+├── plan/<TICKET>-phase-N-plan.md
+├── prd/<TICKET>-phase-N-prd.md
+├── research/<TICKET>-phase-N-research.md
+├── review/<TICKET>-phase-N-review.md
+├── qa/<TICKET>-phase-N-qa.md
+└── security/<TICKET>-phase-N-security.md   (только Critical)
 ```
+
+Все phase-artifacts имеют уникальный typed basename. Для каждой фазы существует
+ровно один канонический review-файл; повторный review обновляет его и фиксирует
+новый раунд внутри документа. Git сохраняет предыдущие версии. Вложенный путь
+`phase/<TICKET>/phase-N.md` не используется. Исторические архивы не
+переименовываются ретроактивно.
 
 Полный аннотированный пример см. [[../Examples/Feature Workspace Structure]].
 

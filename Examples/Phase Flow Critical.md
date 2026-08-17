@@ -43,7 +43,7 @@
 
 ### Шаг 2: Analyst создает PRD
 
-Агент analyst создает `docs/PROJ-0003/prd/PROJ-0003-phase-1.prd.md`:
+Агент analyst создает `docs/PROJ-0003/prd/PROJ-0003-phase-1-prd.md`:
 
 - **Deliverables**: зашифрованное хранилище ключей, интерфейс доступа, миграция существующих данных
 - **Позитивный сценарий**: приложение сохраняет ключ -- данные зашифрованы на диске -- при чтении расшифровываются корректно
@@ -67,7 +67,7 @@
 
 ### Шаг 3: Researcher собирает контекст
 
-Агент researcher создает `docs/PROJ-0003/research/PROJ-0003-phase-1.research.md`:
+Агент researcher создает `docs/PROJ-0003/research/PROJ-0003-phase-1-research.md`:
 
 - Текущее хранилище: `flutter_secure_storage` используется, но ключи хранятся как plain text внутри
 - Платформенные ограничения: Android Keystore доступен через `flutter_secure_storage`, iOS Keychain аналогично
@@ -75,11 +75,11 @@
 - Риск: миграция существующих plain-text ключей должна быть атомарной -- частичная миграция = потеря данных
 - Неизвестное: поведение при смене пароля устройства на Android
 
-Обновляет `docs/PROJ-0003/vision/PROJ-0003.vision.md`.
+Обновляет `docs/PROJ-0003/vision-PROJ-0003.md`.
 
 ### Шаг 4: Planner создает план
 
-Агент planner создает `docs/PROJ-0003/plan/PROJ-0003-phase-1.md` с **явно указанными предположениями безопасности**:
+Агент planner создает `docs/PROJ-0003/plan/PROJ-0003-phase-1-plan.md` с **явно указанными предположениями безопасности**:
 
 **Предположения безопасности (обязательно для Critical):**
 - Ключевой материал обнуляется в памяти сразу после использования
@@ -160,7 +160,7 @@ Implementer предлагает:
 - **Подготовка к security review**: reviewer отмечает области, требующие внимания security-reviewer
 - Вердикт: `REVIEW_OK`
 
-Результат: `docs/PROJ-0003/summary/PROJ-0003-phase-1.summary.md`.
+Результат: `docs/PROJ-0003/review/PROJ-0003-phase-1-review.md`.
 
 ### Шаг 7: Security Reviewer проверяет (только Critical)
 
@@ -175,7 +175,7 @@ Implementer предлагает:
 - Приватный материал не утекает вверх через границы слоёв -- PASS
 - Вердикт: `SECURITY_REVIEW_OK`
 
-Результат: `docs/PROJ-0003/security/PROJ-0003-phase-1.security.md`.
+Результат: `docs/PROJ-0003/security/PROJ-0003-phase-1-security.md`.
 
 **Блокирующее правило**: если security review вернул блокировку, переход к QA невозможен. Implementer должен исправить проблемы и пройти security review повторно.
 
@@ -193,7 +193,7 @@ Implementer предлагает:
 - **IV-3**: Все unit-тесты проходят -- PASS
 - Вердикт: `QA_PASS`
 
-Результат: `docs/PROJ-0003/qa/PROJ-0003-phase-1.qa.md`.
+Результат: `docs/PROJ-0003/qa/PROJ-0003-phase-1-qa.md`.
 
 ### Шаг 9: Завершение фазы
 

@@ -23,11 +23,13 @@
    - Новые постоянные правила — `conventions.md`
    - Архитектурные решения — `docs/project/adr/`
    - Улучшения процесса — `workflow.md` или шаблоны
-2. **Убедитесь**, что `docs/<TICKET>/` исключена из мержа (локальное рабочее пространство ветки)
+2. **Убедитесь**, что долговременная истина находится в `docs/project/`, а
+   workspace готов стать marker-free историческим архивом
 3. **Обновите** conventions, workflow или шаблоны, если фича изменила процессные знания
-4. **Переместите** ticket в `Completed` через `/aidd-ship-feature`; храните
-   outcome и durable commit/PR/merge reference, но не ссылку на
-   `docs/<TICKET>/`
+4. **Откройте primary PR как draft**, чтобы получить его номер, затем через
+   `/aidd-ship-feature` удалите marker, перенесите workspace в
+   `docs/archive/<TICKET>/`, обновите archive index и roadmap и доставьте это в
+   том же PR
 
 ## Что переносить
 
@@ -45,12 +47,12 @@
 - Промежуточные гипотезы
 - Заметки по отладке
 
-## Мерж
+## Trivial Fast Path
 
-После переноса:
-```bash
-git merge --squash <TICKET>-<description>
-# или стратегия мержа вашей команды
-```
+Trivial использует точный delivery bundle, затем marker-free closeout bundle.
+Squash merge остаётся отдельным owner-visible решением. После подтверждённого
+merge можно удалить только merged remote branch; локальная ветка сохраняется.
 
-Директория `docs/<TICKET>/` остаётся на ветке фичи и не мержится.
+Professional/Critical сохраняют отдельные разрешения commit, push, PR и merge.
+После merge `main` содержит `docs/archive/<TICKET>/`, но не активный
+`docs/<TICKET>/`.

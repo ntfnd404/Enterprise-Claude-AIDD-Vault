@@ -29,7 +29,7 @@ Creates the phase artifacts for one phase of the active feature ticket.
    - `docs/project/templates/phase_plan.md`
    - `docs/project/templates/phase_prd.md`
    - `docs/project/templates/phase_research.md`
-6. Create `docs/<TICKET>/phase/<TICKET>/phase-N.md` from `phase_brief.md` with substitutions:
+6. Create `docs/<TICKET>/phase/<TICKET>-phase-N-brief.md` from `phase_brief.md` with substitutions:
 
    | Field | Value |
    |-------|-------|
@@ -40,10 +40,11 @@ Creates the phase artifacts for one phase of the active feature ticket.
    | `Owner` | `Implementer` |
    | `Status` | template default |
 
-7. Create `docs/<TICKET>/plan/<TICKET>-phase-N.md` from `phase_plan.md` with the same metadata substitutions. Owner: `Planner / Architect`.
-8. Create `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` from `phase_prd.md` with the same metadata substitutions. Owner: `Analyst`.
-9. Create `docs/<TICKET>/research/<TICKET>-phase-N.md` from `phase_research.md` with the same metadata substitutions. Owner: `Researcher`.
-10. Ensure directories exist: `docs/<TICKET>/security/`, `docs/<TICKET>/qa/`.
+7. Create `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md` from `phase_plan.md` with the same metadata substitutions. Owner: `Planner / Architect`.
+8. Create `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` from `phase_prd.md` with the same metadata substitutions. Owner: `Analyst`.
+9. Create `docs/<TICKET>/research/<TICKET>-phase-N-research.md` from `phase_research.md` with the same metadata substitutions. Owner: `Researcher`.
+10. Ensure directories exist: `docs/<TICKET>/review/`,
+    `docs/<TICKET>/security/`, and `docs/<TICKET>/qa/`.
 11. Update `docs/<TICKET>/tasklist-<TICKET>.md`:
     - add a row to the Progress table for phase N
     - add a Phase N section to the Phase Breakdown

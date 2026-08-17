@@ -15,7 +15,7 @@
 - [ ] При вердикте `SPEC_BLOCKED` -- PRD переработан, spec-critic перезапущен, повторный вердикт `SPEC_CRITIQUED` получен
 - [ ] Research выполнен (Standard+) ([[Methodology/Roles And Gates#Researcher]])
 - [ ] Plan создан планировщиком ([[Methodology/Roles And Gates#Planner]])
-- [ ] Brief сформирован (файл `phase/<TICKET>/phase-N.md`)
+- [ ] Brief сформирован (файл `phase/<TICKET>-phase-N-brief.md`)
 
 ## Определение полосы
 

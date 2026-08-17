@@ -53,15 +53,19 @@
 
 **Синтаксис:**
 ```
-/aidd-new-ticket <TICKET> [BL-NNN]
+/aidd-new-ticket <TICKET> [BL-NNN] [--trivial]
 ```
 
 **Что делает:**
 1. Проверяет planned ticket или backlog item в `docs/project/roadmap.md`
 2. Переводит работу в `In-flight`
 3. Создаёт `docs/<TICKET>/.active_ticket` с идентификатором тикета
-4. Создаёт idea и tasklist из шаблонов
+4. Создаёт idea, lane-appropriate tasklist и `review/`
 5. Обновляет `Last reviewed` и rolling change log
+
+`--trivial` допустим только после owner-approved Fast Path proposal. Он не
+создаёт phase/plan/PRD/research/vision/QA/security scaffolding. По умолчанию
+используется Professional.
 
 **После создания:** заполнить idea-документ разделами Problem, Business Goal, Scope, Non-goals, Dependencies, Acceptance Criteria, Lane.
 
@@ -79,10 +83,10 @@
 
 **Что делает:**
 1. Читает `.active_ticket` для получения текущего тикета
-2. Создаёт `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` из шаблона PRD
-3. Создаёт `docs/<TICKET>/research/<TICKET>-phase-N.md` из шаблона research
-4. Создаёт `docs/<TICKET>/plan/<TICKET>-phase-N.md` из шаблона plan
-5. Создаёт `docs/<TICKET>/phase/<TICKET>/phase-N.md` из шаблона brief
+2. Создаёт `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` из шаблона PRD
+3. Создаёт `docs/<TICKET>/research/<TICKET>-phase-N-research.md` из шаблона research
+4. Создаёт `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md` из шаблона plan
+5. Создаёт `docs/<TICKET>/phase/<TICKET>-phase-N-brief.md` из шаблона brief
 6. Отчитывается о созданных файлах и маршрутизации: analyst -> researcher -> planner
 
 **Порождаемые агенты:** analyst, researcher, planner (последовательно)
@@ -95,17 +99,20 @@
 
 **Синтаксис:**
 ```
-/aidd-start-phase N
+/aidd-start-phase [N]
 ```
 
 **Что делает:**
-1. Читает `.active_ticket`
-2. Читает phase brief: `docs/<TICKET>/phase/<TICKET>/phase-N.md`
-3. Читает plan: `docs/<TICKET>/plan/<TICKET>-phase-N.md`
-4. Читает PRD: `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md`
+1. Читает `.active_ticket` и Lane
+2. Читает phase brief: `docs/<TICKET>/phase/<TICKET>-phase-N-brief.md`
+3. Читает plan: `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md`
+4. Читает PRD: `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md`
 5. Читает `docs/project/conventions.md`
 6. Определяет следующий связный пакет из чеклиста выполнения
 7. Предлагает пакет и ожидает одобрения
+
+Для Trivial номер фазы не используется: skill читает compact tasklist,
+проверяет eligibility и предлагает один bounded batch.
 
 **Важно:** НЕ начинает реализацию. Только предлагает пакет.
 
@@ -122,9 +129,12 @@
 ```
 
 **Что делает:**
-1. Читает `.claude/aidd-checks.sh`
-2. Если файл существует -- выполняет его
-3. Если файл не существует -- сообщает об отсутствии конфигурации и предлагает запустить настройку Tech Adaptor
+1. Читает Lane и `.claude/aidd-checks.sh`
+2. Professional/Critical выполняет полный pipeline
+3. Trivial выполняет focused checks и один полный pipeline до review
+4. Чистый Trivial archive closeout использует reduced docs-only gate; любой
+   functional/tooling drift возвращает полный pipeline
+5. Если check entry point отсутствует -- сообщает об отсутствии конфигурации
 
 **Ожидаемый конвейер** (последовательно, останавливается на первом сбое):
 1. Format -- только изменённые исходные файлы
@@ -143,7 +153,7 @@
 
 **Синтаксис:**
 ```
-/aidd-complete-phase N
+/aidd-complete-phase [N]
 ```
 
 **Что делает:**
@@ -152,6 +162,7 @@
 3. Обновляет статус фазы на `IMPLEMENT_STEP_OK`
 4. Определяет полосу из phase brief
 5. Маршрутизирует:
+   - Trivial: один `review/<TICKET>-review.md`, без QA/security
    - Professional: reviewer -> qa
    - Critical: reviewer -> security-reviewer -> qa
 6. Отчитывается о завершении и следующих шагах
@@ -179,6 +190,8 @@
 - Целостность скиллов
 - Обнаружение устаревших ссылок
 - Валидация документации активных фич
+- One-to-one Completed roadmap/archive/index contract и отсутствие archive marker
+- Typed phase artifact paths, один canonical review и lane-aware release evidence
 - Предупреждения о прогрессии гейтов (idea без Status, `TASKLIST_READY` с 0 задач)
 
 **Порождаемые агенты:** нет
@@ -201,8 +214,15 @@
 5. Определяет долгосрочные знания для продвижения в `docs/project/`
 6. Проверяет, что все carry-forwards зарегистрированы в roadmap
 7. Перемещает ticket из `In-flight` в `Completed` с durable reference
-8. Проверяет, что `docs/<TICKET>/` исключена из мержа
-9. Отчитывается о готовности к релизу
+8. Открывает primary draft PR, удаляет marker и переносит workspace в
+   `docs/archive/<TICKET>/`
+9. Обновляет archive index и roadmap в том же PR
+10. Проверяет sensitive-content boundary и marker-free diff
+11. Отчитывается о готовности к релизу
+
+Для Trivial delivery и closeout могут использовать точные owner-approved
+bundles; merge/cleanup всегда запрашивается отдельно. Professional/Critical
+сохраняют отдельные разрешения.
 
 **Чеклист продвижения:**
 - Новые постоянные правила -> `docs/project/conventions.md`

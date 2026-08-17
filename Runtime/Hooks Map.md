@@ -47,7 +47,7 @@ Session resumed after compaction. Active ticket: <TICKET>. Re-read phase brief a
 
 1. **Защищённые файлы** -- `.git/`, `.env`, `secrets/`, `.claude/settings.local.json` -- всегда блокируется (exit 2)
 2. **Гейт активного тикета** -- исходные директории (настраиваются через `$AIDD_SOURCE_DIRS`) без `.active_ticket` -- блокируется
-2.5. **Напоминание об открытии фазы** -- при правке исходников: если в `tasklist-<TICKET>.md` есть фаза со статусом `≠ Pending`, но без PRD-артефакта (`prd/<TICKET>-phase-N.prd.md`) -- разрешается с advisory-напоминанием запустить `/aidd-new-phase` (открыть фазу: PRD -> research -> plan -> brief до имплементации). **Никогда не блокирует.** Ловит «имплементацию в неоткрытую фазу».
+2.5. **Напоминание об открытии фазы** -- при правке исходников: если в `tasklist-<TICKET>.md` есть фаза со статусом `≠ Pending`, но без PRD-артефакта (`prd/<TICKET>-phase-N-prd.md`) -- разрешается с advisory-напоминанием запустить `/aidd-new-phase` (открыть фазу: PRD -> research -> plan -> brief до имплементации). **Никогда не блокирует.** Ловит «имплементацию в неоткрытую фазу».
 3. **Файлы рабочего процесса** -- `CLAUDE.md`, `AGENTS.md`, templates, `.claude/*` -- разрешается с advisory-предупреждением
 
 Определение «исходной директории» вычисляется один раз под `set -f` (noglob), чтобы паттерны `$AIDD_SOURCE_DIRS` (`lib/*`, `packages/*`, …) работали как case-globs, а не разворачивались по cwd.

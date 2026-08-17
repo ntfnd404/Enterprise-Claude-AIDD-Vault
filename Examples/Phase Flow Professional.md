@@ -32,7 +32,7 @@
 
 ### Шаг 2: Analyst создает PRD
 
-Агент analyst читает идею и создает `docs/PROJ-0001/prd/PROJ-0001-phase-2.prd.md`:
+Агент analyst читает идею и создает `docs/PROJ-0001/prd/PROJ-0001-phase-2-prd.md`:
 
 - **Deliverables**: экран настроек, переключатели темы и уведомлений, сохранение в локальное хранилище
 - **Позитивный сценарий**: пользователь переключает тему -- приложение перезагружается в новой теме
@@ -54,7 +54,7 @@
 
 ### Шаг 3: Researcher собирает контекст
 
-Агент researcher анализирует кодовую базу и создает `docs/PROJ-0001/research/PROJ-0001-phase-2.research.md`:
+Агент researcher анализирует кодовую базу и создает `docs/PROJ-0001/research/PROJ-0001-phase-2-research.md`:
 
 - Текущая модель настроек: `Settings` entity в `packages/domain/`
 - Существующий репозиторий: `SettingsRepository` с `getSettings()`, но без `saveSettings()`
@@ -62,11 +62,11 @@
 - Риск: нет механизма миграции при добавлении новых полей настроек
 - Неизвестное: нужно ли поддерживать немедленное применение темы без перезапуска
 
-Также обновляет `docs/PROJ-0001/vision/PROJ-0001.vision.md` архитектурой фичи.
+Также обновляет `docs/PROJ-0001/vision-PROJ-0001.md` архитектурой фичи.
 
 ### Шаг 4: Planner создает план и бриф
 
-Агент planner создает `docs/PROJ-0001/plan/PROJ-0001-phase-2.md`:
+Агент planner создает `docs/PROJ-0001/plan/PROJ-0001-phase-2-plan.md`:
 
 - Добавить `saveSettings()` в интерфейс `SettingsRepository`
 - Реализовать в `SettingsRepositoryImpl` через `SharedPreferences`
@@ -75,9 +75,9 @@
 - Подключить маршрут `/settings`
 - Обновить экспорты пакетов
 
-Также создает `docs/PROJ-0001/brief/PROJ-0001-phase-2.brief.md` с разбивкой на батчи и условиями остановки.
+Также создает `docs/PROJ-0001/phase/PROJ-0001-phase-2-brief.md` с разбивкой на батчи и условиями остановки.
 
-Обновляет `docs/PROJ-0001/tasklist/tasklist-PROJ-0001.md`.
+Обновляет `docs/PROJ-0001/tasklist-PROJ-0001.md`.
 
 Статус фазы: `PLAN_APPROVED` + `TASKLIST_READY`.
 
@@ -138,7 +138,7 @@ Implementer предлагает батч:
 - Нет регрессий в существующем коде
 - Вердикт: `REVIEW_OK`
 
-Результат записывается в `docs/PROJ-0001/summary/PROJ-0001-phase-2.summary.md`.
+Результат записывается в `docs/PROJ-0001/review/PROJ-0001-phase-2-review.md`.
 
 ### Шаг 7: QA проверяет сценарии
 
@@ -151,7 +151,7 @@ Implementer предлагает батч:
 - **IV-2**: Все unit-тесты проходят -- PASS
 - Вердикт: `QA_PASS`
 
-Результат записывается в `docs/PROJ-0001/qa/PROJ-0001-phase-2.qa.md`.
+Результат записывается в `docs/PROJ-0001/qa/PROJ-0001-phase-2-qa.md`.
 
 ### Шаг 8: Завершение фазы
 

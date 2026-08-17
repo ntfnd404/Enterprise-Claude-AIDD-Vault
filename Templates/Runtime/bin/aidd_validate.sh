@@ -39,6 +39,35 @@ require_pattern() {
   fi
 }
 
+normalize_id_set() {
+  sed '/^$/d' | sort -u
+}
+
+report_set_difference() {
+  local label="$1"
+  local expected="$2"
+  local actual="$3"
+  local missing
+  local extra
+
+  missing=$(
+    comm -23 \
+      <(printf '%s\n' "${expected}" | normalize_id_set) \
+      <(printf '%s\n' "${actual}" | normalize_id_set) \
+      || true
+  )
+  extra=$(
+    comm -13 \
+      <(printf '%s\n' "${expected}" | normalize_id_set) \
+      <(printf '%s\n' "${actual}" | normalize_id_set) \
+      || true
+  )
+
+  if [[ -n "${missing}" || -n "${extra}" ]]; then
+    fail "${label} set mismatch; missing=[$(printf '%s' "${missing}" | paste -sd, -)] extra=[$(printf '%s' "${extra}" | paste -sd, -)]"
+  fi
+}
+
 # ---------------------------------------------------------------------------
 # 1. Shared docs and runtime files
 # ---------------------------------------------------------------------------
@@ -49,6 +78,7 @@ shared_docs=(
   "docs/README.md"
   "docs/project/roadmap.md"
   "docs/project/workflow.md"
+  "docs/archive/README.md"
 )
 
 hook_files=(
@@ -82,9 +112,11 @@ template_files=(
   "docs/project/templates/phase_research.md"
   "docs/project/templates/phase_plan.md"
   "docs/project/templates/phase_brief.md"
-  "docs/project/templates/phase_summary.md"
+  "docs/project/templates/phase_review.md"
   "docs/project/templates/phase_qa.md"
   "docs/project/templates/phase_security_review.md"
+  "docs/project/templates/trivial_tasklist.md"
+  "docs/project/templates/trivial_review.md"
 )
 
 extra_template_files=(
@@ -136,11 +168,11 @@ if [[ -f "${roadmap_path}" ]]; then
   fi
 
   ticket_workspace_links=$(
-    grep -nE '\]\([^)]*docs/[A-Z][A-Z0-9]*-[0-9]+/' "${roadmap_path}" \
+    grep -nE '\]\([^)]*((docs/)?archive|docs|\.\./archive|\.\.)/[A-Z][A-Z0-9]*-[0-9]+/' "${roadmap_path}" \
       || true
   )
   if [[ -n "${ticket_workspace_links}" ]]; then
-    fail "roadmap links to branch-local ticket workspaces:\n${ticket_workspace_links}"
+    fail "roadmap links directly to active or archived ticket workspaces:\n${ticket_workspace_links}"
   fi
 fi
 
@@ -165,6 +197,86 @@ if [[ "${quick}" == "--quick" ]]; then
   echo "failures: ${failures}"
   echo "warnings: ${warnings}"
   [[ ${failures} -eq 0 ]] && exit 0 || exit 1
+fi
+
+# ---------------------------------------------------------------------------
+# 2a. Completed-ticket archive contract
+# ---------------------------------------------------------------------------
+
+archive_root="docs/archive"
+archive_index="${archive_root}/README.md"
+
+if [[ -d "${archive_root}" && -f "${roadmap_path}" && -f "${archive_index}" ]]; then
+  completed_ticket_ids=$(
+    awk '
+      /^## Completed tickets$/ { in_completed = 1; next }
+      /^## / && in_completed { exit }
+      in_completed && /^- [A-Z][A-Z0-9]*-[0-9]+([^0-9]|$)/ {
+        line = $0
+        sub(/^- /, "", line)
+        sub(/[^A-Z0-9-].*$/, "", line)
+        print line
+      }
+    ' "${roadmap_path}" | sort
+  )
+
+  archive_ticket_ids=$(
+    find "${archive_root}" -mindepth 1 -maxdepth 1 -type d -print \
+      | sed 's#^.*/##' \
+      | sort
+  )
+
+  invalid_archive_ids=$(
+    printf '%s\n' "${archive_ticket_ids}" \
+      | sed '/^$/d' \
+      | grep -Ev '^[A-Z][A-Z0-9]*-[0-9]+$' \
+      || true
+  )
+  if [[ -n "${invalid_archive_ids}" ]]; then
+    fail "invalid archive ticket directories: ${invalid_archive_ids}"
+  fi
+
+  archive_index_ids=$(
+    grep -E '^\| [A-Z][A-Z0-9]*-[0-9]+ \|' "${archive_index}" \
+      | sed -E 's/^\| ([A-Z][A-Z0-9]*-[0-9]+) \|.*/\1/' \
+      | sort \
+      || true
+  )
+  duplicate_archive_index_ids=$(
+    printf '%s\n' "${archive_index_ids}" \
+      | sed '/^$/d' \
+      | uniq -d \
+      || true
+  )
+  if [[ -n "${duplicate_archive_index_ids}" ]]; then
+    fail "archive index contains duplicate ticket IDs: ${duplicate_archive_index_ids}"
+  fi
+
+  report_set_difference \
+    "completed roadmap/archive directory" \
+    "${completed_ticket_ids}" \
+    "${archive_ticket_ids}"
+  report_set_difference \
+    "completed roadmap/archive index" \
+    "${completed_ticket_ids}" \
+    "${archive_index_ids}"
+
+  archive_markers=$(find "${archive_root}" -name ".active_ticket" -print || true)
+  if [[ -n "${archive_markers}" ]]; then
+    fail "active ticket markers found inside archive:\n${archive_markers}"
+  fi
+
+  duplicate_lifecycle_ids=""
+  while IFS= read -r archive_ticket_id; do
+    [[ -n "${archive_ticket_id}" ]] || continue
+    if [[ -d "docs/${archive_ticket_id}" ]]; then
+      duplicate_lifecycle_ids="${duplicate_lifecycle_ids}${archive_ticket_id}"$'\n'
+    fi
+  done <<< "${archive_ticket_ids}"
+  duplicate_lifecycle_ids=$(printf '%s' "${duplicate_lifecycle_ids}" | sed '/^$/d')
+  if [[ -n "${duplicate_lifecycle_ids}" ]]; then
+    fail "ticket IDs exist in both active and archived locations: ${duplicate_lifecycle_ids}"
+  fi
 fi
 
 # ---------------------------------------------------------------------------
@@ -280,11 +392,216 @@ if find docs -maxdepth 2 -name ".active_ticket" 2>/dev/null | grep -q .; then
       fi
     fi
 
+    # Release-ready evidence is lane-aware. Trivial tickets use one
+    # ticket-level review; phase-based lanes retain exact phase coverage.
+    # Ordinary unfinished tickets are intentionally not subject to this gate.
+    tasklist_path="${ticket_root}/tasklist-${ticket_id}.md"
+    if [[ -f "${tasklist_path}" ]] \
+      && grep -qE '^Status: `?(RELEASE_READY|DOCS_UPDATED)`?$' "${tasklist_path}" 2>/dev/null; then
+      ticket_lane=""
+      if [[ -f "${idea_path}" ]]; then
+        ticket_lane=$(awk -F ': ' '/^Lane: / { print $2; exit }' "${idea_path}")
+      fi
+
+      if [[ "${ticket_lane}" == "Trivial" ]]; then
+        trivial_review_dir="${ticket_root}/review"
+        trivial_review_path="${trivial_review_dir}/${ticket_id}-review.md"
+        trivial_review_candidates=$(
+          find "${trivial_review_dir}" -maxdepth 1 -type f \
+            -name "${ticket_id}-review*.md" -print 2>/dev/null \
+            | sort \
+            || true
+        )
+        trivial_review_count=$(
+          printf '%s\n' "${trivial_review_candidates}" \
+            | sed '/^$/d' \
+            | wc -l \
+            | tr -d '[:space:]'
+        )
+
+        if [[ "${trivial_review_count}" -ne 1 ]]; then
+          fail "release-ready Trivial ticket must have exactly one ticket-level review: ${ticket_id}; found=${trivial_review_count}"
+        fi
+        trivial_unexpected_reviews=$(
+          find "${trivial_review_dir}" -maxdepth 1 -type f \
+            ! -name "${ticket_id}-review.md" -print 2>/dev/null \
+            | sort \
+            || true
+        )
+        if [[ -n "${trivial_unexpected_reviews}" ]]; then
+          fail "release-ready Trivial ticket has non-canonical review files: ${ticket_id}"
+        fi
+        if [[ ! -f "${trivial_review_path}" ]]; then
+          fail "release-ready Trivial ticket is missing review: ${trivial_review_path}"
+        else
+          if ! grep -qE '^Status: `?REVIEW_OK`?$' "${trivial_review_path}" 2>/dev/null; then
+            fail "release-ready Trivial review is not REVIEW_OK: ${trivial_review_path}"
+          fi
+          if ! grep -qE "^Ticket: ${ticket_id}$" "${trivial_review_path}" 2>/dev/null; then
+            fail "release-ready Trivial review has mismatched Ticket metadata: ${trivial_review_path}"
+          fi
+          if ! grep -qE '^Lane: Trivial$' "${trivial_review_path}" 2>/dev/null; then
+            fail "release-ready Trivial review has mismatched Lane metadata: ${trivial_review_path}"
+          fi
+          if ! awk '
+            /^## Verdict$/ { in_verdict = 1; next }
+            /^## / && in_verdict { exit }
+            in_verdict && /^`REVIEW_OK`$/ { found = 1 }
+            END { exit(found ? 0 : 1) }
+          ' "${trivial_review_path}"; then
+            fail "release-ready Trivial review verdict is not REVIEW_OK: ${trivial_review_path}"
+          fi
+        fi
+
+        trivial_scaffold_evidence=""
+        for trivial_scaffold_dir in phase plan prd research qa security; do
+          if [[ -d "${ticket_root}/${trivial_scaffold_dir}" ]]; then
+            trivial_scaffold_files=$(
+              find "${ticket_root}/${trivial_scaffold_dir}" -type f -print 2>/dev/null \
+                | sort \
+                || true
+            )
+            trivial_scaffold_evidence="${trivial_scaffold_evidence}${trivial_scaffold_files}"
+          fi
+        done
+        trivial_phase_reviews=$(
+          find "${trivial_review_dir}" -maxdepth 1 -type f \
+            -name "${ticket_id}-phase-*-review.md" -print 2>/dev/null \
+            | sort \
+            || true
+        )
+        trivial_vision_evidence=""
+        if [[ -f "${ticket_root}/vision-${ticket_id}.md" ]]; then
+          trivial_vision_evidence="${ticket_root}/vision-${ticket_id}.md"
+        fi
+        if [[ -n "${trivial_scaffold_evidence}${trivial_phase_reviews}${trivial_vision_evidence}" ]]; then
+          fail "release-ready Trivial ticket contains phase, plan, PRD, research, vision, QA, or security evidence: ${ticket_id}"
+        fi
+      else
+        phase_dir="${ticket_root}/phase"
+        unexpected_phase_artifacts=""
+        for artifact_rule in \
+          "phase|${ticket_id}-phase-*-brief.md" \
+          "plan|${ticket_id}-phase-*-plan.md" \
+          "prd|${ticket_id}-phase-*-prd.md" \
+          "research|${ticket_id}-phase-*-research.md" \
+          "review|${ticket_id}-phase-*-review.md" \
+          "qa|${ticket_id}-phase-*-qa.md" \
+          "security|${ticket_id}-phase-*-security.md"; do
+          artifact_dir=${artifact_rule%%|*}
+          artifact_pattern=${artifact_rule#*|}
+          unexpected_files=$(
+            find "${ticket_root}/${artifact_dir}" -maxdepth 1 -type f \
+              ! -name "${artifact_pattern}" -print 2>/dev/null \
+              | sort \
+              || true
+          )
+          if [[ -n "${unexpected_files}" ]]; then
+            unexpected_phase_artifacts="${unexpected_phase_artifacts}${unexpected_files}"$'\n'
+          fi
+        done
+        if [[ -n "${unexpected_phase_artifacts}" ]]; then
+          fail "release-ready ticket contains non-canonical phase artifact filenames: ${ticket_id}"
+        fi
+
+        declared_phase_ids=$(
+          find "${phase_dir}" -maxdepth 1 -type f -name "${ticket_id}-phase-*-brief.md" -print 2>/dev/null \
+            | sed -E 's#^.*/[^/]+-phase-([0-9]+)-brief[.]md$#\1#' \
+            | sort -n
+        )
+        if [[ -z "${declared_phase_ids}" ]]; then
+          fail "release-ready ticket has no declared phase briefs: ${ticket_id}"
+        fi
+
+        review_phase_ids=$(
+          find "${ticket_root}/review" -maxdepth 1 -type f \
+            -name "${ticket_id}-phase-*-review.md" -print 2>/dev/null \
+            | sed -E 's#^.*/[^/]+-phase-([0-9]+)-review[.]md$#\1#' \
+            | sort -n
+        )
+        qa_phase_ids=$(
+          find "${ticket_root}/qa" -maxdepth 1 -type f \
+            -name "${ticket_id}-phase-*-qa.md" -print 2>/dev/null \
+            | sed -E 's#^.*/[^/]+-phase-([0-9]+)-qa[.]md$#\1#' \
+            | sort -n
+        )
+
+        plan_phase_ids=$(
+          find "${ticket_root}/plan" -maxdepth 1 -type f \
+            -name "${ticket_id}-phase-*-plan.md" -print 2>/dev/null \
+            | sed -E 's#^.*/[^/]+-phase-([0-9]+)-plan[.]md$#\1#' \
+            | sort -n
+        )
+        prd_phase_ids=$(
+          find "${ticket_root}/prd" -maxdepth 1 -type f \
+            -name "${ticket_id}-phase-*-prd.md" -print 2>/dev/null \
+            | sed -E 's#^.*/[^/]+-phase-([0-9]+)-prd[.]md$#\1#' \
+            | sort -n
+        )
+        research_phase_ids=$(
+          find "${ticket_root}/research" -maxdepth 1 -type f \
+            -name "${ticket_id}-phase-*-research.md" -print 2>/dev/null \
+            | sed -E 's#^.*/[^/]+-phase-([0-9]+)-research[.]md$#\1#' \
+            | sort -n
+        )
+
+        critical_phase_ids=""
+        if [[ -d "${phase_dir}" ]]; then
+          while IFS= read -r phase_brief; do
+            [[ -f "${phase_brief}" ]] || continue
+            if grep -qE '^Lane: Critical$' "${phase_brief}" 2>/dev/null; then
+              phase_number=$(basename "${phase_brief}" | sed -E 's/^.*-phase-([0-9]+)-brief[.]md$/\1/')
+              critical_phase_ids="${critical_phase_ids}${phase_number}"$'\n'
+            fi
+          done < <(find "${phase_dir}" -maxdepth 1 -type f -name "${ticket_id}-phase-*-brief.md" -print 2>/dev/null | sort)
+        fi
+        critical_phase_ids=$(printf '%s' "${critical_phase_ids}" | sed '/^$/d' | sort -n)
+        security_phase_ids=$(
+          find "${ticket_root}/security" -maxdepth 1 -type f \
+            -name "${ticket_id}-phase-*-security.md" -print 2>/dev/null \
+            | sed -E 's#^.*/[^/]+-phase-([0-9]+)-security[.]md$#\1#' \
+            | sort -n
+        )
+
+        report_set_difference \
+          "${ticket_id} release-ready plan phases" \
+          "${declared_phase_ids}" \
+          "${plan_phase_ids}"
+        report_set_difference \
+          "${ticket_id} release-ready PRD phases" \
+          "${declared_phase_ids}" \
+          "${prd_phase_ids}"
+        report_set_difference \
+          "${ticket_id} release-ready research phases" \
+          "${declared_phase_ids}" \
+          "${research_phase_ids}"
+
+        report_set_difference \
+          "${ticket_id} release-ready review phases" \
+          "${declared_phase_ids}" \
+          "${review_phase_ids}"
+        report_set_difference \
+          "${ticket_id} release-ready QA phases" \
+          "${declared_phase_ids}" \
+          "${qa_phase_ids}"
+        report_set_difference \
+          "${ticket_id} release-ready Critical security phases" \
+          "${critical_phase_ids}" \
+          "${security_phase_ids}"
+      fi
+    fi
+
     # Phase brief discipline: TASKLIST_READY with 0 checked tasks signals
     # a stub mistakenly advanced to TASKLIST_READY.
-    phase_dir="${ticket_root}/phase/${ticket_id}"
+    nested_phase_dir="${ticket_root}/phase/${ticket_id}"
+    if [[ -d "${nested_phase_dir}" ]] \
+      && find "${nested_phase_dir}" -type f -print -quit 2>/dev/null | grep -q .; then
+      fail "active ticket uses redundant nested phase directory; expected docs/${ticket_id}/phase/${ticket_id}-phase-N-brief.md: ${ticket_id}"
+    fi
+
+    phase_dir="${ticket_root}/phase"
     if [[ -d "${phase_dir}" ]]; then
-      for brief in "${phase_dir}"/*.md; do
+      for brief in "${phase_dir}/${ticket_id}"-phase-*-brief.md; do
         [[ -f "${brief}" ]] || continue
         if grep -qE "^Status:.*TASKLIST_READY" "${brief}" 2>/dev/null; then
           checked=$(grep -cE '^\s*- \[x\]' "${brief}" 2>/dev/null || echo 0)

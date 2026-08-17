@@ -13,7 +13,7 @@ AIDD использует 8 специализированных агентов.
 | **researcher** | idea, PRD, кодовую базу | research, vision | `SPEC_CRITIQUED` -> `RESEARCH_DONE` |
 | **planner** | vision, PRD, research | plan, brief, tasklist | `RESEARCH_DONE` -> `PLAN_APPROVED` |
 | **implementer** | brief, plan, PRD, conventions | исходный код, phase, tasklist | `TASKLIST_READY` -> `IMPLEMENT_STEP_OK` |
-| **reviewer** | diff, plan, PRD, conventions | phase summary | `IMPLEMENT_STEP_OK` -> `REVIEW_OK` |
+| **reviewer** | diff, compact Trivial scope or phase plan/PRD, conventions | canonical review | `IMPLEMENT_STEP_OK` -> `REVIEW_OK` |
 | **security-reviewer** | diff, plan, PRD, review | security review | `REVIEW_OK` -> `SECURITY_REVIEW_OK` |
 | **qa** | PRD, phase, plan, review/security | QA report | `REVIEW_OK` -> `QA_PASS` |
 
@@ -34,7 +34,7 @@ AIDD использует 8 специализированных агентов.
 
 | Артефакт | Путь |
 |---|---|
-| Phase PRD | `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` |
+| Phase PRD | `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` |
 
 **Правила:**
 - Описывает deliverables, сценарии и метрики успеха
@@ -55,7 +55,7 @@ AIDD использует 8 специализированных агентов.
 
 | Файл | Назначение |
 |---|---|
-| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Единственный вход. Critic не читает idea, vision, кодовую базу -- только PRD. |
+| `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` | Единственный вход. Critic не читает idea, vision, кодовую базу -- только PRD. |
 
 **Выходные артефакты:**
 
@@ -85,14 +85,14 @@ AIDD использует 8 специализированных агентов.
 | Файл | Назначение |
 |---|---|
 | `docs/<TICKET>/idea-<TICKET>.md` | Скоуп фичи |
-| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Требования фазы |
+| `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` | Требования фазы |
 | Кодовая база | Текущее состояние реализации |
 
 **Выходные артефакты:**
 
 | Артефакт | Путь |
 |---|---|
-| Research | `docs/<TICKET>/research/<TICKET>-phase-N.md` |
+| Research | `docs/<TICKET>/research/<TICKET>-phase-N-research.md` |
 | Vision (если новый/обновлённый) | `docs/<TICKET>/vision-<TICKET>.md` |
 
 **Правила:**
@@ -114,16 +114,16 @@ Researcher ОБЯЗАН отказаться потреблять PRD, если 
 | Файл | Назначение |
 |---|---|
 | `docs/<TICKET>/vision-<TICKET>.md` | Архитектура фичи |
-| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Требования фазы |
-| `docs/<TICKET>/research/<TICKET>-phase-N.md` | Факты кодовой базы и риски |
+| `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` | Требования фазы |
+| `docs/<TICKET>/research/<TICKET>-phase-N-research.md` | Факты кодовой базы и риски |
 | `docs/project/conventions.md` | Архитектурные правила |
 
 **Выходные артефакты:**
 
 | Артефакт | Путь |
 |---|---|
-| Plan | `docs/<TICKET>/plan/<TICKET>-phase-N.md` |
-| Phase brief | `docs/<TICKET>/phase/<TICKET>/phase-N.md` |
+| Plan | `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md` |
+| Phase brief | `docs/<TICKET>/phase/<TICKET>-phase-N-brief.md` |
 | Обновление tasklist | `docs/<TICKET>/tasklist-<TICKET>.md` |
 
 **Правила:**
@@ -144,9 +144,9 @@ Researcher ОБЯЗАН отказаться потреблять PRD, если 
 | Файл | Назначение |
 |---|---|
 | `docs/<TICKET>/.active_ticket` | Идентификатор текущего тикета |
-| `docs/<TICKET>/phase/<TICKET>/phase-N.md` | Пакет выполнения |
-| `docs/<TICKET>/plan/<TICKET>-phase-N.md` | Дизайн реализации |
-| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Критерии приёмки |
+| `docs/<TICKET>/phase/<TICKET>-phase-N-brief.md` | Пакет выполнения |
+| `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md` | Дизайн реализации |
+| `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` | Критерии приёмки |
 | `docs/project/conventions.md` | Архитектурные правила |
 | `docs/project/code-style-guide.md` | Правила стиля |
 
@@ -156,7 +156,7 @@ Researcher ОБЯЗАН отказаться потреблять PRD, если 
 |---|---|
 | Исходные файлы | Модификация согласно плану |
 | `docs/<TICKET>/tasklist-<TICKET>.md` | Отметка выполненных элементов |
-| `docs/<TICKET>/phase/<TICKET>/phase-N.md` | Отметка выполненных элементов |
+| `docs/<TICKET>/phase/<TICKET>-phase-N-brief.md` | Отметка выполненных элементов |
 
 **Цикл выполнения:**
 1. Прочитать текущие phase, plan и PRD
@@ -184,15 +184,15 @@ Researcher ОБЯЗАН отказаться потреблять PRD, если 
 | Файл | Назначение |
 |---|---|
 | Code diff | Что изменилось |
-| `docs/<TICKET>/plan/<TICKET>-phase-N.md` | Ожидаемая реализация |
-| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Критерии приёмки |
+| `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md` | Ожидаемая реализация |
+| `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` | Критерии приёмки |
 | `docs/project/conventions.md` | Архитектурные правила |
 
 **Выходные артефакты:**
 
 | Артефакт | Путь |
 |---|---|
-| Review summary | `docs/<TICKET>/<TICKET>-phase-N-summary.md` |
+| Review summary | `docs/<TICKET>/review/<TICKET>-phase-N-review.md` |
 
 **Правила:**
 - Сначала пишет находки: блокирующие, важные, отклонения
@@ -214,15 +214,15 @@ Researcher ОБЯЗАН отказаться потреблять PRD, если 
 | Файл | Назначение |
 |---|---|
 | Code diff | Что изменилось |
-| `docs/<TICKET>/plan/<TICKET>-phase-N.md` | Ожидаемое поведение |
-| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Требования |
-| `docs/<TICKET>/<TICKET>-phase-N-summary.md` | Находки ревью |
+| `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md` | Ожидаемое поведение |
+| `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` | Требования |
+| `docs/<TICKET>/review/<TICKET>-phase-N-review.md` | Находки ревью |
 
 **Выходные артефакты:**
 
 | Артефакт | Путь |
 |---|---|
-| Security review | `docs/<TICKET>/security/<TICKET>-phase-N.md` |
+| Security review | `docs/<TICKET>/security/<TICKET>-phase-N-security.md` |
 
 **Проверки:**
 - Секреты и чувствительные данные никогда не логируются
@@ -246,17 +246,17 @@ Researcher ОБЯЗАН отказаться потреблять PRD, если 
 
 | Файл | Назначение |
 |---|---|
-| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Сценарии и критерии |
-| `docs/<TICKET>/phase/<TICKET>/phase-N.md` | Phase brief |
-| `docs/<TICKET>/plan/<TICKET>-phase-N.md` | Дизайн реализации |
-| `docs/<TICKET>/<TICKET>-phase-N-summary.md` | Находки ревью |
-| `docs/<TICKET>/security/<TICKET>-phase-N.md` | Находки безопасности (Critical) |
+| `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` | Сценарии и критерии |
+| `docs/<TICKET>/phase/<TICKET>-phase-N-brief.md` | Phase brief |
+| `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md` | Дизайн реализации |
+| `docs/<TICKET>/review/<TICKET>-phase-N-review.md` | Находки ревью |
+| `docs/<TICKET>/security/<TICKET>-phase-N-security.md` | Находки безопасности (Critical) |
 
 **Выходные артефакты:**
 
 | Артефакт | Путь |
 |---|---|
-| QA report | `docs/<TICKET>/qa/<TICKET>-phase-N.md` |
+| QA report | `docs/<TICKET>/qa/<TICKET>-phase-N-qa.md` |
 
 **Категории сценариев:**
 - **PS** -- Positive Scenarios (happy path)

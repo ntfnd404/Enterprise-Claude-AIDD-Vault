@@ -2,9 +2,10 @@
 
 Last reviewed: YYYY-MM-DD
 
-The roadmap is the durable backlog and ticket lifecycle record. Feature
-workspaces under `docs/<TICKET>/` are branch-local and must never be linked
-from this document.
+The roadmap is the durable backlog and ticket lifecycle record. Active
+workspaces under `docs/<TICKET>/` and historical workspaces under
+`docs/archive/<TICKET>/` must never be linked directly from this document;
+archive navigation lives in `docs/archive/README.md`.
 
 Unscheduled work uses `BL-NNN`. When work starts, assign a ticket and record
 `<TICKET> (from BL-NNN)` in `In-flight`. Each leading ticket or backlog ID may
@@ -13,7 +14,7 @@ appear in only one lifecycle section.
 ## Completed tickets
 
 <!-- One bullet per shipped ticket. Include outcome plus durable PR, merge, or
-     commit reference. Never link to docs/<TICKET>/. -->
+     commit reference. Never link to an active or archived workspace. -->
 
 - BW-XXXX — <one-line outcome> (merged to main).
 - BW-XXXX — <one-line outcome> (merged to main).

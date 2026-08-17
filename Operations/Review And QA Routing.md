@@ -11,6 +11,15 @@
 
 ## Маршрутизация
 
+### Полоса Trivial
+
+```text
+ticket reviewer only
+```
+
+Создаётся ровно один `review/<TICKET>-review.md`; QA и security artifacts не
+создаются. Повторный review обновляет тот же файл и фиксирует новый раунд.
+
 ### Полоса Professional
 
 ```text
@@ -45,9 +54,9 @@ Superpowers code-reviewer можно использовать до официа�
 
 | Артефакт | Полоса |
 |---|---|
-| `<TICKET>-phase-N-summary.md` | Все |
-| `security/<TICKET>-phase-N.md` | Только Critical |
-| `qa/<TICKET>-phase-N.md` | Все (кроме Trivial) |
+| `review/<TICKET>-phase-N-review.md` | Все |
+| `security/<TICKET>-phase-N-security.md` | Только Critical |
+| `qa/<TICKET>-phase-N-qa.md` | Все (кроме Trivial) |
 
 ## Требования гейтов
 

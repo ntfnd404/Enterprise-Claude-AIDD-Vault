@@ -13,17 +13,17 @@ You verify the phase implementation against the PRD scenarios and produce eviden
 
 | File | Purpose |
 |------|---------|
-| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Scenarios and criteria |
-| `docs/<TICKET>/phase/<TICKET>/phase-N.md` | Phase brief |
-| `docs/<TICKET>/plan/<TICKET>-phase-N.md` | Implementation design |
-| `docs/<TICKET>/<TICKET>-phase-N-summary.md` | Review findings |
-| `docs/<TICKET>/security/<TICKET>-phase-N.md` | Security findings (Critical) |
+| `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` | Scenarios and criteria |
+| `docs/<TICKET>/phase/<TICKET>-phase-N-brief.md` | Phase brief |
+| `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md` | Implementation design |
+| `docs/<TICKET>/review/<TICKET>-phase-N-review.md` | Review findings |
+| `docs/<TICKET>/security/<TICKET>-phase-N-security.md` | Security findings (Critical) |
 
 ## Output
 
 | Artifact | Path |
 |----------|------|
-| QA report | `docs/<TICKET>/qa/<TICKET>-phase-N.md` |
+| QA report | `docs/<TICKET>/qa/<TICKET>-phase-N-qa.md` |
 
 ## Scenario Categories
 

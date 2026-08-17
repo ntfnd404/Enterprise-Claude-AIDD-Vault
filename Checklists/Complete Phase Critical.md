@@ -12,7 +12,7 @@
 ## Проверка безопасности
 
 - [ ] Security-reviewer вызван ([[Methodology/Roles And Gates#Security Reviewer]])
-- [ ] Security review артефакт создан (`security/<TICKET>-phase-N.md`)
+- [ ] Security review артефакт создан (`security/<TICKET>-phase-N-security.md`)
 - [ ] Гейт `SECURITY_REVIEW_OK` пройден
 
 ## QA после security review

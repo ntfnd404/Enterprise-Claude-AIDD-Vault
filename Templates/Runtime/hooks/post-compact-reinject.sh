@@ -26,16 +26,16 @@ ticket_dir="$(dirname "${ticket_file}")"
 # Find the most recent non-STUB phase brief; otherwise fall back to the
 # latest brief regardless of status.
 latest_phase=""
-phase_dir="${ticket_dir}/phase/${ticket}"
+phase_dir="${ticket_dir}/phase"
 if [[ -d "${phase_dir}" ]]; then
-  for f in $(ls "${phase_dir}" 2>/dev/null | sort -Vr); do
+  for f in $(find "${phase_dir}" -maxdepth 1 -type f -name "${ticket}-phase-*-brief.md" -exec basename {} \; 2>/dev/null | sort -Vr); do
     if ! grep -q 'Status:.*STUB' "${phase_dir}/${f}" 2>/dev/null; then
       latest_phase="${f}"
       break
     fi
   done
   if [[ -z "${latest_phase}" ]]; then
-    latest_phase="$(ls "${phase_dir}" 2>/dev/null | sort -V | tail -1 || true)"
+    latest_phase="$(find "${phase_dir}" -maxdepth 1 -type f -name "${ticket}-phase-*-brief.md" -exec basename {} \; 2>/dev/null | sort -V | tail -1 || true)"
   fi
 fi
 
@@ -50,7 +50,7 @@ if [[ -n "${latest_phase}" ]]; then
   fi
 fi
 
-phase_id="${latest_phase%.md}"
+phase_id="$(printf '%s' "${latest_phase}" | sed -E 's/^.*-phase-([0-9]+)-brief[.]md$/phase-\1/')"
 msg="Context restored. Ticket: ${ticket} | Phase: ${phase_id} | Lane: ${lane} | Goal: ${goal}. Re-read phase brief and plan before continuing."
 msg="${msg//\"/\\\"}"
 printf '{"continue":true,"systemMessage":"%s"}\n' "${msg}"
