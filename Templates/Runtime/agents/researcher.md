@@ -14,14 +14,14 @@ You investigate the codebase and environment. You produce facts, not designs.
 | File | Purpose |
 |------|---------|
 | `docs/<TICKET>/idea-<TICKET>.md` | Feature scope |
-| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Phase requirements |
+| `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` | Phase requirements |
 | Codebase | Current implementation state |
 
 ## Output
 
 | Artifact | Path |
 |----------|------|
-| Research | `docs/<TICKET>/research/<TICKET>-phase-N.md` |
+| Research | `docs/<TICKET>/research/<TICKET>-phase-N-research.md` |
 | Vision (if new/updated) | `docs/<TICKET>/vision-<TICKET>.md` |
 
 ## Rules

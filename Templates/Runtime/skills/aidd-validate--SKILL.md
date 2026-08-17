@@ -30,10 +30,12 @@ Optional `--quick` for the fast pre-check (file existence + template metadata on
 
 ### File existence
 - Shared docs: `CLAUDE.md`, `AGENTS.md`, `docs/README.md`,
-  `docs/project/workflow.md`, `docs/project/roadmap.md`
+  `docs/project/workflow.md`, `docs/project/roadmap.md`,
+  `docs/archive/README.md`
 - Hook files: `settings.json`, all hook scripts in `.claude/hooks/`, `aidd_validate.sh`
 - Agent files: all 7 agents in `.claude/agents/` (Standard tier)
-- Template files: all 10+ templates in `docs/project/templates/`
+- Template files: all phase-based and compact Trivial templates in
+  `docs/project/templates/`
 
 ### Template metadata contract
 Every workflow template must contain:
@@ -62,7 +64,34 @@ Each workflow skill directory must have a `SKILL.md` with:
 - `Last reviewed` uses `YYYY-MM-DD`.
 - Completed, in-flight, planned, deferred, and change-log sections exist.
 - A leading ticket or backlog identifier appears in only one entry.
-- Roadmap entries never link to branch-local `docs/<TICKET>/` workspaces.
+- Roadmap entries never link directly to active `docs/<TICKET>/` or historical
+  `docs/archive/<TICKET>/` workspaces.
+
+### Completed-ticket archive
+
+- `docs/archive/README.md` exists and uses the fixed ticket-index format.
+- Archive directory names are valid ticket IDs.
+- Completed roadmap IDs, archive directories, and index IDs are identical and
+  unique.
+- No archive contains `.active_ticket`.
+- A ticket ID cannot exist in both active and archived locations.
+
+### Release-ready evidence
+
+For an active ticket at the release-ready/ship boundary:
+- `Trivial` has exactly one ticket-level
+  `docs/<TICKET>/review/<TICKET>-review.md` with matching Ticket/Lane metadata,
+  `Status: REVIEW_OK`, and verdict `REVIEW_OK`;
+- `Trivial` has no phase briefs, phase review summaries, plan, PRD, research,
+  vision, QA, or security records;
+- `Professional` and `Critical` review and QA artifact phase numbers exactly
+  match declared phase briefs;
+- `Critical` security artifact numbers exactly match Critical phase briefs;
+- Professional/Critical brief, plan, PRD, research, review, QA, and security
+  files use the typed filename contract from `docs/project/workflow.md`;
+- active ticket phase briefs live directly under `phase/`; a nested
+  `phase/<TICKET>/` directory is invalid;
+- missing, extra, duplicate, or lane-incompatible artifacts are failures.
 
 ### Active feature docs (warnings)
 For every `.active_ticket` file under `docs/`:

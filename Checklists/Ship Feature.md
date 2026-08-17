@@ -16,4 +16,9 @@
 
 ## Контроль артефактов
 
-- [ ] Branch-local docs (`docs/<TICKET>/`) НЕ включены в PR
+- [ ] Долговременные решения перенесены в `docs/project/`
+- [ ] `.active_ticket` удалён
+- [ ] Workspace перенесён в `docs/archive/<TICKET>/`
+- [ ] Archive index и roadmap обновлены в том же primary PR
+- [ ] Архив не содержит credentials, private keys, personal email, raw SQL
+      dumps или private response bodies

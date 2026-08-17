@@ -96,13 +96,17 @@ docs/
         ├── phase_plan.md
         ├── phase_brief.md
         ├── phase_research.md
-        ├── phase_summary.md
+        ├── phase_review.md
+        ├── trivial_tasklist.md
+        ├── trivial_review.md
         ├── phase_qa.md
         ├── phase_security_review.md
         └── adr.md
 
 CLAUDE.md                    # Инструкции проекта для Claude
 AGENTS.md                    # Полный справочник агентов
+docs/README.md               # Навигация по durable docs и архиву
+docs/archive/README.md       # Индекс marker-free completed tickets
 ```
 
 Если указан адаптер, дополнительно:

@@ -23,6 +23,7 @@
 
 ## Закрытие фазы
 
-- [ ] Summary создан (`<TICKET>-phase-N-summary.md`)
+- [ ] Канонический review создан
+      (`review/<TICKET>-phase-N-review.md`); повторный раунд обновляет его
 - [ ] `/aidd-complete-phase N`
 - [ ] Фаза отмечена как DONE в tasklist

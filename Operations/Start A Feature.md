@@ -18,7 +18,7 @@ git checkout -b <TICKET>-<description>
 ## Шаг 3: Создать рабочее пространство
 
 ```text
-/aidd-new-ticket <TICKET> [BL-NNN]
+/aidd-new-ticket <TICKET> [BL-NNN] [--trivial]
 ```
 
 Создаёт:
@@ -30,7 +30,7 @@ git checkout -b <TICKET>-<description>
 ## Шаг 4: Заполнить идею
 
 Обязательные поля:
-- `Lane` — Professional или Critical
+- `Lane` — Trivial, Professional или Critical
 - `Status` — `IDEA_READY` когда заполнение завершено
 - `Problem` — в чём проблема
 - `Business Goal` — зачем это строить
@@ -49,6 +49,10 @@ git checkout -b <TICKET>-<description>
 
 Если не уверены — выбирайте Critical. См. [[../Methodology/Lanes]].
 
+Для Trivial агент сначала показывает Fast Path proposal. Только после явного
+согласия владельца используется `--trivial`; registration и activation идут в
+primary branch/PR без отдельного roadmap-only PR.
+
 ## Шаг 6: Построить каркас фазы
 
 Маршрутизация через подготовительных агентов:
@@ -59,12 +63,16 @@ git checkout -b <TICKET>-<description>
 
 Результат: артефакты фазы в состоянии `PLAN_APPROVED` + `TASKLIST_READY`.
 
-## Правило
+## Правило Professional/Critical
 
 Не начинайте реализацию, пока не достигнуты `PLAN_APPROVED` и
 `TASKLIST_READY`, владелец не принял полный specification-only diff и не создан
 отдельный commit `aidd(<TICKET>): approve phase <N> specification baseline`.
 Checkpoint подробно описан в [[Prepare A Phase]].
+
+Trivial использует принятые compact Idea/tasklist и batch как baseline без
+отдельного specification checkpoint. При scope growth работа останавливается и
+возвращается в стандартный flow.
 
 ## Далее
 

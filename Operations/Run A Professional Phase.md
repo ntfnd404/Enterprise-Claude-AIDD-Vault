@@ -14,9 +14,9 @@
 ## Перед началом
 
 Прочитайте:
-- `docs/<TICKET>/phase/<TICKET>/phase-N.md`
-- `docs/<TICKET>/plan/<TICKET>-phase-N.md`
-- `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md`
+- `docs/<TICKET>/phase/<TICKET>-phase-N-brief.md`
+- `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md`
+- `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md`
 - `docs/project/conventions.md`
 
 ## Цикл выполнения

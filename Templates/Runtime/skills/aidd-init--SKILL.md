@@ -32,8 +32,11 @@ Every file created by this skill MUST be read from the vault first and copied as
 | `.claude/hooks/*.sh` | `<VAULT>/Templates/Runtime/hooks/` |
 | `.claude/bin/aidd_validate.sh` | `<VAULT>/Templates/Runtime/bin/aidd_validate.sh` |
 | `.claude/settings.json` | `<VAULT>/Templates/Runtime/settings.json` |
+| `docs/README.md` | `<VAULT>/Templates/Project Docs/docs-README.md` |
+| `docs/archive/README.md` | `<VAULT>/Templates/Project Docs/archive-README.md` |
 | `docs/project/workflow.md` | `<VAULT>/Templates/Project Docs/workflow.md` |
 | `docs/project/roadmap.md` | `<VAULT>/Templates/Project Docs/roadmap.md` |
+| `docs/project/agent-runtime.md` | `<VAULT>/Templates/Project Docs/agent-runtime.md` |
 | `docs/project/superpowers-overlay.md` | `<VAULT>/Templates/Project Docs/superpowers-overlay.md` |
 | `docs/project/conventions.md` | `<VAULT>/Templates/Project Docs/conventions.md.stub` |
 | `docs/project/code-style-guide.md` | `<VAULT>/Templates/Project Docs/code-style-guide.md.stub` |
@@ -86,6 +89,9 @@ In `CLAUDE.md` and `AGENTS.md`, replace:
 - `<PROJECT_NAME>` → current directory name
 - `<PREFIX>` → value from `--prefix`
 - `<TIER>` → value from `--tier`
+
+In `docs/project/roadmap.md` and `docs/project/agent-runtime.md`, replace the
+scaffold `Last reviewed: YYYY-MM-DD` with today's date.
 
 In `.claude/settings.json` and hook scripts, set:
 - `AIDD_TIER` → value from `--tier`

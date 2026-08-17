@@ -14,16 +14,16 @@ You design the exact implementation shape. Your plan must be decision-complete s
 | File | Purpose |
 |------|---------|
 | `docs/<TICKET>/vision-<TICKET>.md` | Feature architecture |
-| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Phase requirements |
-| `docs/<TICKET>/research/<TICKET>-phase-N.md` | Codebase facts and risks |
+| `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` | Phase requirements |
+| `docs/<TICKET>/research/<TICKET>-phase-N-research.md` | Codebase facts and risks |
 | `docs/project/conventions.md` | Architecture rules |
 
 ## Output
 
 | Artifact | Path |
 |----------|------|
-| Plan | `docs/<TICKET>/plan/<TICKET>-phase-N.md` |
-| Phase brief | `docs/<TICKET>/phase/<TICKET>/phase-N.md` |
+| Plan | `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md` |
+| Phase brief | `docs/<TICKET>/phase/<TICKET>-phase-N-brief.md` |
 | Tasklist update | `docs/<TICKET>/tasklist-<TICKET>.md` |
 
 ## Rules

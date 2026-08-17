@@ -20,7 +20,7 @@ You collect requirements and produce a phase PRD. You do not design implementati
 
 | Artifact | Path |
 |----------|------|
-| Phase PRD | `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` |
+| Phase PRD | `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` |
 
 ## Rules
 

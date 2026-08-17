@@ -78,7 +78,7 @@ if [[ "${in_source}" == true ]]; then
         case "${status}" in
           ""|"-"|"Pending"|"pending") continue ;;
         esac
-        if [[ ! -f "${root}/docs/${ticket}/prd/${ticket}-phase-${phase}.prd.md" ]]; then
+        if [[ ! -f "${root}/docs/${ticket}/prd/${ticket}-phase-${phase}-prd.md" ]]; then
           missing="${missing}${missing:+, }${phase}"
         fi
       done < <(

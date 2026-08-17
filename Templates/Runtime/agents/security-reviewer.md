@@ -14,15 +14,15 @@ You perform a security-focused review of Critical lane phases. You check for sen
 | File | Purpose |
 |------|---------|
 | Code diff | What changed |
-| `docs/<TICKET>/plan/<TICKET>-phase-N.md` | Expected behavior |
-| `docs/<TICKET>/prd/<TICKET>-phase-N.prd.md` | Requirements |
-| `docs/<TICKET>/<TICKET>-phase-N-summary.md` | Review findings |
+| `docs/<TICKET>/plan/<TICKET>-phase-N-plan.md` | Expected behavior |
+| `docs/<TICKET>/prd/<TICKET>-phase-N-prd.md` | Requirements |
+| `docs/<TICKET>/review/<TICKET>-phase-N-review.md` | Review findings |
 
 ## Output
 
 | Artifact | Path |
 |----------|------|
-| Security review | `docs/<TICKET>/security/<TICKET>-phase-N.md` |
+| Security review | `docs/<TICKET>/security/<TICKET>-phase-N-security.md` |
 
 ## Checks
 

@@ -2,19 +2,38 @@
 
 ## Trivial
 
-Использовать только для:
-- Исправления опечаток
-- Переименований
-- Мелких правок конфигурации
-- Локальных однофайловых изменений без архитектурного воздействия
+Использовать только для ограниченного низкорискового изменения, которое
+помещается в один небольшой батч. Агент обязан объяснить, почему задача подходит
+под Fast Path, перечислить пропускаемые и сохраняемые шаги и дождаться согласия
+владельца.
 
-Поток: `edit → review`
+Минимальный workspace:
 
-НЕ используйте Trivial, если применимо хотя бы одно из следующего:
-- Изменяется публичное поведение
-- Затронуто несколько модулей
-- Существует риск регрессии
-- Есть последствия для безопасности/приватности/хранилища
+- `.active_ticket`;
+- `idea-<TICKET>.md`;
+- `tasklist-<TICKET>.md`;
+- `review/<TICKET>-review.md` после реализации.
+
+Поток:
+
+```text
+compact idea + tasklist → implementation → ticket review → primary-PR archive
+```
+
+Нет phase/plan/PRD/research/vision/QA/security scaffolding и отдельного
+specification checkpoint. До `REVIEW_OK` обязательны focused checks и один
+полный проектный gate.
+
+НЕ используйте Trivial при Critical trigger, неоднозначном или растущем scope,
+новой зависимости, изменении schema/storage/public contract,
+production/deployment или external-resource mutation. При сомнениях —
+Professional. Scope growth немедленно останавливает работу и требует
+переклассификации со стандартным specification checkpoint.
+
+После review используются три точных owner-visible bundle: delivery
+(commit/push/draft PR), closeout (archive commit/push/CI/ready) и отдельно
+merge/cleanup. Любой drift или failure прекращает оставшиеся действия. Merge и
+инфраструктурные мутации никогда не выводятся из предыдущего разрешения.
 
 ## Professional
 
@@ -99,4 +118,4 @@ Critical дополнительно требует прохождения гей
 | Critical | Без ограничений | Определяется риском и границами безопасности |
 | Professional | Мягко 3–5 | При превышении 5 — рассмотри разбивку на второй тикет |
 | Professional Short | 1–3 | Жёсткий лимит; превышение 3 вызывает реклассификацию в Professional |
-| Trivial | 0 фаз | Один коммит; без структуры фаз |
+| Trivial | 0 фаз | Один bounded batch; компактные артефакты и primary PR |
