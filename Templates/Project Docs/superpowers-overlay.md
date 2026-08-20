@@ -3,13 +3,13 @@
 Workflow Version: 3
 
 Superpowers is an optional Claude Code plugin layer for structured execution:
-brainstorming, TDD, systematic debugging, `/execute-plan`, subagent-driven
+brainstorming, TDD, `/execute-plan`, subagent-driven
 development, code review, and skill authoring.
 
 It does not replace AIDD.
 
 ```text
-/aidd-* = workflow and gates
+/aidd-* = workflow, gates, and systematic failure diagnosis
 dart-* / flutter-* = stack execution skills
 Superpowers = general execution methodology
 AIDD docs/vault = source of truth
@@ -36,7 +36,7 @@ status, replace required artifacts, or bypass batch approval.
 | `/brainstorming` | Idea shaping, PRD clarification, scope discovery | Output must be captured in AIDD artifacts; it is not `PRD_READY` by itself |
 | Adversarial spec review | PRD/plan critique before implementation | Professional: recommended; Critical: required before `PLAN_APPROVED` |
 | TDD | Implementation batches with behavioral logic | Recommended for domain, application, BLoC, codec, gateway, and regression work; not mandatory for every UI/layout change |
-| Systematic debugging | QA_FAIL, flaky tests, runtime bugs, root cause analysis | Investigate cause before fixes; update research/plan when assumptions change |
+| Systematic debugging | AIDD owns it through `/aidd-diagnose-failure` | Superpowers is not required and does not replace the read-only diagnosis contract |
 | `/execute-plan` | Execute an already approved implementation batch | Only after `PLAN_APPROVED` or `TASKLIST_READY`; never execute an entire phase without checkpoints |
 | Code-reviewer | Pre-review/self-check | Not `REVIEW_OK`; the AIDD reviewer still owns the review artifact |
 | Subagents | Parallel research, review, or test exploration | Do not bypass role ownership; production code remains implementer-owned |

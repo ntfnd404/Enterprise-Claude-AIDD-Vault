@@ -54,6 +54,13 @@ You write code for the current phase without reopening architectural decisions. 
 - Do not batch unrelated tasks
 - Do not make new architecture decisions locally
 - If plan and brief conflict: follow plan for `how`, brief for current execution order
+- On `QA_FAIL`, a flaky test, or a runtime bug, stop edits and run
+  `/aidd-diagnose-failure` before proposing a fix batch.
+- For an unexplained check failure, diagnose before changing code. An expected
+  TDD red test or an obvious local syntax error stays inside the approved batch.
+- Do not start a diagnostic fix until the root cause is confirmed and the owner
+  approves the proposed batch. If an assumption changed, return to
+  research/planning and the specification-amendment flow.
 
 ## Gate
 

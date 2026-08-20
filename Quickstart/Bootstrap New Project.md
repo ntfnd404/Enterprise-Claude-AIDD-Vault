@@ -6,7 +6,7 @@
 
 ## v3.2: что обязательно учесть при бутстрапе
 
-1. В шапке проектного `CLAUDE.md` укажите `Workflow Minor: 3.3` (поле `Workflow Version` остаётся `3`).
+1. В шапке проектного `CLAUDE.md` укажите `Workflow Minor: 3.4` (поле `Workflow Version` остаётся `3`).
 2. Скопируйте scaffold-документы из vault в корень нового проекта:
    - `Templates/Project Docs/CLAUDE.md` → `<project_root>/CLAUDE.md`
    - `Templates/Project Docs/vision.md` → `docs/project/vision.md`
@@ -60,11 +60,12 @@ cp "<PATH_TO_VAULT>/Templates/Runtime/skills/aidd-init--SKILL.md" \
 │   ├── reviewer.md
 │   ├── security-reviewer.md # Только Standard+
 │   └── qa.md
-├── skills/                 # 5-8 навыков воркфлоу (зависит от тира)
+├── skills/                 # 6-9 навыков воркфлоу (зависит от тира)
 │   ├── aidd-init/
 │   ├── aidd-new-ticket/
 │   ├── aidd-new-phase/     # Только Standard+
 │   ├── aidd-start-phase/
+│   ├── aidd-diagnose-failure/
 │   ├── aidd-run-checks/
 │   ├── aidd-complete-phase/ # Только Standard+
 │   ├── aidd-validate/      # Только Standard+

@@ -4,12 +4,12 @@
 
 Добавить AIDD v3.2 в существующую кодовую базу с минимальным вмешательством.
 
-## v3.2: апгрейд существующего проекта
+## AIDD v3.2 baseline: апгрейд существующего проекта
 
 Если в проекте уже стоит AIDD v3.0/v3.1, выполните перед основным аудитом:
 
-1. Поднимите `Workflow Minor` до `3.2` в шапке проектного `CLAUDE.md` (поле `Workflow Version` остаётся `3`).
-2. Добавьте `Workflow Minor: 3.3` в шапки уже существующих шаблонов под `docs/project/templates/` (idea, vision, phase_brief, phase_plan, phase_prd, phase_qa, phase_research, phase_security_review, phase_review, trivial_tasklist, trivial_review, tasklist, adr).
+1. Поднимите `Workflow Minor` до `3.4` в шапке проектного `CLAUDE.md` (поле `Workflow Version` остаётся `3`).
+2. Добавьте `Workflow Minor: 3.4` в шапки уже существующих шаблонов под `docs/project/templates/` (idea, vision, phase_brief, phase_plan, phase_prd, phase_qa, phase_research, phase_security_review, phase_review, trivial_tasklist, trivial_review, tasklist, adr).
 3. Создайте `docs/project/vision.md` и `docs/project/roadmap.md` из vault scaffolds (`Templates/Project Docs/vision.md`, `Templates/Project Docs/roadmap.md`), если их ещё нет.
 4. Скопируйте `Templates/Artifacts/discovery.md` в `docs/project/templates/discovery.md`, если ранее этот шаблон в проекте отсутствовал.
 5. Включите вызов spec-critic в существующий analyst-флоу: после написания PRD/Plan analyst запускает spec-critic как sub-agent и фиксирует findings в QA-артефакте фазы.
@@ -20,6 +20,26 @@
 8. Добавьте `docs/archive/README.md` и primary-PR archive lifecycle; завершённые
    workspace больше не удаляются и не остаются только в локальных ветках.
 9. Сделайте Discovery опциональным артефактом: при наличии альтернатив используйте `docs/project/templates/discovery.md` (мирорится из `[[../Templates/Artifacts/discovery]]`).
+
+## Workflow Minor 3.4: failure diagnosis
+
+Для существующего AIDD-проекта обновление выполняется с просмотром diff, без
+слепой перезаписи пользовательских runtime-файлов:
+
+1. Скопируйте
+   `Templates/Runtime/skills/aidd-diagnose-failure--SKILL.md` в
+   `.claude/skills/aidd-diagnose-failure/SKILL.md`.
+2. Сравните и перенесите изменения из канонических `implementer.md`, `qa.md`,
+   `aidd-run-checks`, `aidd-complete-phase` и project workflow docs.
+3. Сравните проектный `.claude/bin/aidd_validate.sh` с новой версией из Vault;
+   обновите validator так, чтобы `aidd-diagnose-failure` входил в обязательный
+   список workflow skills.
+4. Поднимите `Workflow Minor` до `3.4` в runtime docs и project artifact
+   templates, затем запустите `/aidd-validate`.
+
+`/aidd-init --adopt` добавляет отсутствующий skill, но по контракту не
+перезаписывает уже существующие роли, validator и docs; поэтому шаги сравнения
+выше остаются обязательными.
 
 ## Шаг 0: Установка seed-скилла
 

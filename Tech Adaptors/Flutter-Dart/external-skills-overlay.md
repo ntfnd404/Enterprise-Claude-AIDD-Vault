@@ -9,9 +9,9 @@
 
 | Слой | Префикс / команда | Роль |
 |---|---|---|
-| AIDD workflow skills | `/aidd-*` | Управляют lifecycle и gate progression |
+| AIDD workflow skills | `/aidd-*` | Управляют lifecycle, gate progression и read-only failure diagnosis |
 | Flutter/Dart stack skills | `dart-*`, `flutter-*` | 16 unique installed skills для работы внутри AIDD gates |
-| Superpowers plugin | `/brainstorming`, `/execute-plan`, TDD, debugging, code-reviewer | Общая методика исполнения; не является gate command |
+| Superpowers plugin | `/brainstorming`, `/execute-plan`, TDD, code-reviewer | Опциональная методика исполнения; не является gate command |
 
 Flutter/Dart skills выбираются по типу батча. Superpowers может помогать с процессом исполнения, но не заменяет Flutter/Dart conventions и AIDD gates.
 
@@ -27,7 +27,7 @@ Flutter/Dart skills выбираются по типу батча. Superpowers �
 | `dart-add-unit-test` | основной test-authoring рецепт |
 | `dart-generate-test-mocks` | для тестов с RPC / storage зависимостями |
 | `dart-collect-coverage` | обязателен в Critical lane |
-| `dart-fix-runtime-errors` | recovery после QA_FAIL |
+| `dart-fix-runtime-errors` | fix внутри owner-approved batch после `/aidd-diagnose-failure` |
 | `dart-use-pattern-matching` | для sealed-типов проекта |
 | `dart-resolve-package-conflicts` | на любом гейте до IMPLEMENT |
 | `flutter-add-widget-test` | парный к BLoC-виджетам |

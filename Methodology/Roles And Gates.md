@@ -98,6 +98,9 @@ brief/tasklist не считаются дрифтом immutable-специфик
 
 - Analyst может использовать `/brainstorming`, но `PRD_READY` требует PRD artifact.
 - Planner может использовать adversarial spec review, но `PLAN_APPROVED` требует plan/brief/tasklist.
-- Implementer может использовать TDD, systematic debugging и `/execute-plan`, но только для approved batch.
+- Implementer может использовать TDD и `/execute-plan`, но только для approved
+  batch. При `QA_FAIL`, flaky/runtime или необъяснимом check failure он сначала
+  запускает read-only `/aidd-diagnose-failure`; новый fix batch требует
+  отдельного owner approval.
 - Reviewer может использовать code-reviewer как pre-review, но `REVIEW_OK` требует reviewer artifact.
 - Critical lane всегда сохраняет security-reviewer.

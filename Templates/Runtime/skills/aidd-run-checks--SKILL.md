@@ -40,7 +40,8 @@ failure.
 7. If the configured check entry point is absent, report that the project has
    no check pipeline and suggest installing a Tech Adaptor or creating
    `.claude/aidd-checks.sh` manually.
-8. Stop on the first failure and report which stage failed.
+8. Stop on the first failure and report which stage failed. If the cause is not
+   self-evident, suggest `/aidd-diagnose-failure` rather than a speculative fix.
 
 ## Expected pipeline
 
@@ -87,6 +88,8 @@ Overall: PASS | FAIL
 - If the script is not executable: report and suggest `chmod +x .claude/aidd-checks.sh`.
 - If a required tool is not on PATH: report the missing tool by name.
 - If a check times out: report the timeout, do not retry automatically.
+- If a failure is flaky or remains unexplained, route to
+  `/aidd-diagnose-failure`; do not patch code from this skill.
 
 ## Quality gate
 

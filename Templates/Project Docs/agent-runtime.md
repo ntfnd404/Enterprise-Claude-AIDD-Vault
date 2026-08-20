@@ -1,7 +1,7 @@
 # Agent Runtime
 
 Workflow Version: 3
-Workflow Minor: 3.3
+Workflow Minor: 3.4
 Last reviewed: YYYY-MM-DD
 
 ## Purpose
@@ -21,6 +21,20 @@ ticket state, lane, gates, project conventions, and owner-approval rules.
 Codex does not treat `.claude/skills` or `.claude/hooks` as native Codex
 integrations. It may read those files to reproduce the documented procedure,
 but must not claim that a Claude hook or slash command ran automatically.
+
+The AIDD failure-diagnosis workflow has native entry points in both tools:
+
+- Claude Code: `/aidd-diagnose-failure [phase-number] [failure-summary]` from
+  `.claude/skills/aidd-diagnose-failure/SKILL.md`.
+- Codex: `$aidd-diagnose-failure`, discovered from
+  `~/.agents/skills/aidd-diagnose-failure/SKILL.md`. Keep the containing skill
+  directory as a symlink to the Codex adapter under
+  `Templates/Runtime/codex-skills/`; the adapter
+  loads the canonical AIDD protocol and exists only to remove Claude-specific
+  frontmatter that Codex does not accept. Codex runtimes that still discover
+  user skills only from `~/.codex/skills` require a second directory symlink
+  there to the same adapter; keep both until the installed runtime discovers
+  `.agents`.
 
 ## Shared sources of truth
 
@@ -54,6 +68,12 @@ Whether a Professional/Critical batch runs in Codex or Claude Code:
 7. Run the phase checks and record evidence.
 8. Update phase/tasklist state and show the diff.
 9. Stop at a meaningful review boundary.
+
+On `QA_FAIL`, a flaky test, runtime bug, or unexplained check failure, both
+tools run the equivalent read-only `aidd-diagnose-failure` protocol before a
+new fix batch is proposed. A changed specification assumption returns to
+research/planning; a confirmed in-scope cause still requires owner approval for
+the proposed fix batch.
 
 For Trivial, both tools use the Fast Path in `docs/project/workflow.md`: compact
 Idea/tasklist/review artifacts, no phase scaffolding or specification checkpoint,

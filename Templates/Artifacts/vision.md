@@ -5,7 +5,7 @@ Ticket: <TICKET-ID>
 Phase: feature
 Lane: Professional
 Workflow Version: 3
-Workflow Minor: 3.3
+Workflow Minor: 3.4
 Owner: Researcher / Architect
 Date: YYYY-MM-DD
 

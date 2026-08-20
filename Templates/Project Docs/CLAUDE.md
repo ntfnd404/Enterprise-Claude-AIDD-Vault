@@ -19,7 +19,7 @@
 ## Runtime Defaults
 
 - Workflow version: `3`
-- Workflow minor: `3.3`
+- Workflow minor: `3.4`
 - Runtime model: `Claude-native`
 - Default lane: `Professional`
 - Tier: `<TIER>`
@@ -99,6 +99,7 @@ Core commands:
 - `/aidd-new-ticket`
 - `/aidd-new-phase`
 - `/aidd-start-phase`
+- `/aidd-diagnose-failure`
 - `/aidd-run-checks`
 - `/aidd-complete-phase`
 - `/aidd-validate`

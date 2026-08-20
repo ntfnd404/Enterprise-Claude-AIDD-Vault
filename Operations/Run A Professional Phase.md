@@ -50,7 +50,8 @@ Superpowers можно использовать только внутри approv
 
 - `/execute-plan` исполняет batch, предложенный `/aidd-start-phase N` и одобренный оператором.
 - TDD рекомендуется для поведения, use cases, BLoC, codecs, gateways и regression fixes.
-- Systematic debugging применяется для runtime failures и flaky tests.
+- `/aidd-diagnose-failure` применяется для `QA_FAIL`, runtime failures, flaky
+  tests и необъяснимых check failures до предложения нового fix batch.
 - code-reviewer — pre-review, не `REVIEW_OK`.
 
 Если immutable-спецификация изменилась, affected implementation

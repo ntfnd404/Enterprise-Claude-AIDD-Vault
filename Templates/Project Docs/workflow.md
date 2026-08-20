@@ -144,6 +144,20 @@ IDEA_READY → PRD_READY → RESEARCH_DONE → VISION_APPROVED → PLAN_APPROVED
 - Show diff
 - Stop on meaningful boundary
 
+## Failure Diagnosis
+
+`/aidd-diagnose-failure` is the read-only recovery workflow for `QA_FAIL`,
+flaky tests, runtime bugs, and otherwise unexplained check failures. It
+reproduces the failure, tests hypotheses one at a time, and returns either a
+confirmed root cause with a proposed owner-approved fix batch or
+`ROOT_CAUSE_UNCONFIRMED`.
+
+The command creates no gate and edits no files. If diagnosis changes a product,
+platform, or architecture assumption, return to research/planning and commit a
+reviewed specification amendment before affected implementation resumes.
+Expected TDD red tests and obvious local syntax errors remain inside the
+current approved batch.
+
 ## Specification Baseline Before Implementation
 
 This section applies to Professional and Critical tickets. Trivial uses the
@@ -224,13 +238,14 @@ do not change gate progression.
 
 | Layer | Role |
 |---|---|
-| `/aidd-*` | Workflow commands and gate routing |
+| `/aidd-*` | Workflow commands, gate routing, and read-only failure diagnosis |
 | `dart-*` / `flutter-*` | Stack-specific execution skills selected by batch type |
-| Superpowers | General execution methodology: brainstorming, TDD, debugging, `/execute-plan`, pre-review |
+| Superpowers | Optional execution aids: brainstorming, TDD, `/execute-plan`, pre-review |
 
 Superpowers `/execute-plan` is allowed only for an approved batch after
 `PLAN_APPROVED` / `TASKLIST_READY`. Superpowers code-reviewer is a pre-review,
-not `REVIEW_OK`. Critical phases still require `security-reviewer`.
+not `REVIEW_OK`. AIDD owns systematic failure diagnosis; Superpowers is not
+required for it. Critical phases still require `security-reviewer`.
 
 ## Documentation
 

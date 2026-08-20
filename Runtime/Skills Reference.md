@@ -10,6 +10,7 @@
 | `/aidd-new-ticket <TICKET>` | Создание рабочего пространства фичи с заглушками idea + tasklist | Все | -- |
 | `/aidd-new-phase N` | Подготовка артефактов фазы (PRD, research, plan, brief) | Standard+ | -- |
 | `/aidd-start-phase N` | Загрузка контекста фазы, предложение первого пакета | Все | `effort: medium` |
+| `/aidd-diagnose-failure [N] [summary]` | Read-only подтверждение первопричины перед fix batch | Все | `effort: high` |
 | `/aidd-run-checks` | Конвейер format + analyze + lint + test | Все | `context: fork`, `effort: low` |
 | `/aidd-complete-phase N` | Закрытие фазы, маршрутизация в review/qa | Standard+ | `effort: high` |
 | `/aidd-validate` | Проверка целостности процессного слоя | Standard+ | `context: fork`, `effort: low` |
@@ -118,6 +119,55 @@
 
 **Порождаемые агенты:** implementer (после одобрения пакета)
 **Читаемые артефакты:** `.active_ticket`, phase brief, plan, PRD, conventions
+
+### /aidd-diagnose-failure
+
+Read-only диагностический протокол для `QA_FAIL`, flaky tests, runtime bugs и
+необъяснимых check failures.
+
+**Синтаксис:**
+```text
+/aidd-diagnose-failure [phase-number] [failure-summary]
+```
+
+**Что делает:**
+1. Читает active ticket, lane и lane-specific execution artifacts.
+2. Фиксирует expected/actual, окружение и точный способ воспроизведения.
+3. Сужает сбой до минимального сценария и первой нарушенной границы.
+4. Проверяет гипотезы по одной без изменения файлов.
+5. Возвращает подтверждённую причину либо `ROOT_CAUSE_UNCONFIRMED`.
+6. Предлагает regression evidence и один минимальный fix batch.
+
+Skill не создаёт gate или обязательный artifact. Подтверждённая причина всё
+равно требует owner approval нового batch; изменившееся предположение
+возвращает работу к research/planning. Expected TDD red и очевидная локальная
+syntax error не запускают отдельный diagnostic cycle.
+
+**Порождаемые агенты:** нет
+**Изменяемые файлы:** нет
+**Читаемые артефакты:** active ticket, idea/tasklist, phase/plan/PRD, QA или
+review evidence
+
+Для Codex используется тонкий adapter из
+`Templates/Runtime/codex-skills/aidd-diagnose-failure/SKILL.md`. Он содержит
+только Codex-compatible frontmatter и загружает канонический протокол выше;
+методика не дублируется.
+
+Пользовательская установка Codex:
+
+```bash
+mkdir -p ~/.agents/skills
+ln -s "<VAULT>/Templates/Runtime/codex-skills/aidd-diagnose-failure" \
+  ~/.agents/skills/aidd-diagnose-failure
+
+# Compatibility for Codex runtimes that still use $CODEX_HOME/skills:
+mkdir -p ~/.codex/skills
+ln -s "<VAULT>/Templates/Runtime/codex-skills/aidd-diagnose-failure" \
+  ~/.codex/skills/aidd-diagnose-failure
+```
+
+После создания ссылки откройте новую Codex-сессию для повторного обнаружения
+skills.
 
 ### /aidd-run-checks
 
@@ -268,7 +318,7 @@ bundles; merge/cleanup всегда запрашивается отдельно.
 |---|---|---|---|
 | Workflow skills | `/aidd-*` | Да, только по контракту конкретного `/aidd-*` | AIDD vault |
 | Stack execution skills | `dart-*`, `flutter-*` | Нет | Вендор / Tech Adaptor |
-| Superpowers execution methodology | `/brainstorming`, `/execute-plan`, TDD, debugging, code-reviewer | Нет | Superpowers plugin |
+| Superpowers execution methodology | `/brainstorming`, `/execute-plan`, TDD, code-reviewer | Нет | Superpowers plugin |
 | Domain/project-specific skills | project-specific names | Нет, если явно не оформлены как AIDD workflow skills | Проект |
 
 `/aidd-*` остаются единственными workflow-командами. Остальные skills/plugins помогают внутри роли и gate.
@@ -321,6 +371,7 @@ effort: low
 | `/aidd-new-ticket` | Да | Да | Да |
 | `/aidd-new-phase` | Нет | Да | Да |
 | `/aidd-start-phase` | Да | Да | Да |
+| `/aidd-diagnose-failure` | Да | Да | Да |
 | `/aidd-run-checks` | Да | Да | Да |
 | `/aidd-complete-phase` | Нет | Да | Да |
 | `/aidd-validate` | Нет | Да | Да |

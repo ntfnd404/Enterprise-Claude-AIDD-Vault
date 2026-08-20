@@ -42,6 +42,9 @@ first.
   implementation; never mix the initial specification and implementation in
   one commit.
 - Run the checks required by the active phase after changes.
+- On `QA_FAIL`, flaky tests, runtime bugs, or unexplained check failures, use
+  `$aidd-diagnose-failure` before proposing a fix. Do not treat expected TDD
+  red tests or obvious local syntax errors as a diagnostic cycle.
 - Show `git status` and the complete relevant diff at every review boundary.
 - Leave changes unstaged until the owner has reviewed them.
 - Never run `git commit` or `git push` without the owner's explicit permission.

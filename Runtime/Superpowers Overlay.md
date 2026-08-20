@@ -1,11 +1,11 @@
 # Superpowers Overlay
 
-Superpowers — это optional Claude Code plugin для структурированной инженерной работы: brainstorming, TDD, systematic debugging, `/execute-plan`, subagent-driven development, code-reviewer и writing-skills.
+Superpowers — это optional Claude Code plugin для структурированной инженерной работы: brainstorming, TDD, `/execute-plan`, subagent-driven development, code-reviewer и writing-skills.
 
 Он не заменяет AIDD.
 
 ```text
-/aidd-* = workflow и gates
+/aidd-* = workflow, gates и systematic failure diagnosis
 dart-* / flutter-* = stack execution skills
 Superpowers = general execution methodology
 AIDD docs/vault = source of truth
@@ -41,7 +41,7 @@ Superpowers помогает исполнять работу внутри тек
 | `/brainstorming` | idea shaping, PRD clarification, discovery | Результат должен попасть в AIDD artifact; сам по себе не `PRD_READY` |
 | Adversarial spec review | критика PRD/plan до реализации | Professional: рекомендуется; Critical: обязательно перед `PLAN_APPROVED` |
 | TDD | implementation batch с проверяемым поведением | Особенно полезно для domain/application/BLoC/codec/gateway/regression; не обязательно для каждого UI/layout изменения |
-| Systematic debugging | QA_FAIL, flaky tests, runtime bugs | Сначала root cause, потом fix; при смене предположений обновить docs |
+| Systematic debugging | AIDD владеет им через `/aidd-diagnose-failure` | Superpowers не требуется и не заменяет read-only diagnosis contract |
 | `/execute-plan` | исполнение approved batch | Только после `PLAN_APPROVED` или `TASKLIST_READY`; не исполнять всю фазу без checkpoint |
 | code-reviewer | pre-review/self-check | Не `REVIEW_OK`; официальный reviewer gate сохраняется |
 | subagents | параллельное research/review/test exploration | Не обходят role ownership; production code пишет implementer |

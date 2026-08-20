@@ -7,6 +7,7 @@
 | `/aidd-new-ticket <TICKET> [BL-NNN] [--trivial]` | Создать lane-aware рабочее пространство для новой фичи |
 | `/aidd-new-phase N` | Создать артефакты фазы |
 | `/aidd-start-phase [N]` | Загрузить phase или compact Trivial context и предложить батч |
+| `/aidd-diagnose-failure [N] [summary]` | Read-only поиск первопричины после QA_FAIL, flaky/runtime или необъяснимого check failure |
 | `/aidd-run-checks` | Форматирование (только изменённые файлы) + анализ + тесты |
 | `/aidd-complete-phase [N]` | Закрыть фазу или Trivial batch и направить на ревью |
 | `/aidd-validate` | Проверить целостность процессного слоя |
@@ -30,11 +31,12 @@
 | `/brainstorming` | Уточнение идеи, scope, PRD | Не закрывает `PRD_READY` |
 | Adversarial spec review | Проверка PRD/plan на противоречия | Professional: рекомендуется; Critical: обязательно |
 | TDD | Реализация поведения внутри батча | Не обязательно для каждого UI/layout изменения |
-| Systematic debugging | QA_FAIL, flaky tests, runtime bugs | Сначала root cause, потом fix |
 | `/execute-plan` | Исполнение approved batch | Только после `/aidd-start-phase` и approval |
 | code-reviewer | Pre-review перед официальным reviewer | Не `REVIEW_OK` |
 
-`/aidd-*` остаются единственными командами воркфлоу и гейтов.
+`/aidd-*` остаются единственными командами воркфлоу и гейтов. Systematic
+debugging теперь принадлежит `/aidd-diagnose-failure`; Superpowers для него не
+требуется.
 
 ## События хуков (автоматические)
 

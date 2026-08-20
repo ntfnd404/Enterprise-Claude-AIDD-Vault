@@ -51,9 +51,9 @@ Every file created by this skill MUST be read from the vault first and copied as
 
 After copying, remove files not included in the requested tier:
 
-**Lite** — keep only: `analyst`, `planner`, `implementer`, `reviewer`, `qa` agents; `aidd-init`, `aidd-new-ticket`, `aidd-start-phase`, `aidd-run-checks`, `aidd-ship-feature` skills; 6 hooks (no SubagentStart/Stop, no team mode hooks).
+**Lite** — keep only: `analyst`, `planner`, `implementer`, `reviewer`, `qa` agents; `aidd-init`, `aidd-new-ticket`, `aidd-start-phase`, `aidd-diagnose-failure`, `aidd-run-checks`, `aidd-ship-feature` skills; 6 hooks (no SubagentStart/Stop, no team mode hooks).
 
-**Standard** — keep all 7 agents, all 8 skills, 10 hooks (no team mode hooks).
+**Standard** — keep all 7 agents, all 9 skills, 10 hooks (no team mode hooks).
 
 **Enterprise** — keep everything.
 

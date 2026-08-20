@@ -7,9 +7,9 @@
 
 | Слой | Префикс / команда | Роль |
 |---|---|---|
-| AIDD workflow skills | `/aidd-*` | Управляют lifecycle и gate progression |
+| AIDD workflow skills | `/aidd-*` | Управляют lifecycle, gate progression и read-only failure diagnosis |
 | Flutter/Dart stack skills | `dart-*`, `flutter-*` | Помогают выполнять стековые задачи внутри AIDD gate |
-| Superpowers plugin | `/brainstorming`, `/execute-plan`, TDD, debugging, code-reviewer, subagents | Общая методика исполнения; не закрывает AIDD gates |
+| Superpowers plugin | `/brainstorming`, `/execute-plan`, TDD, code-reviewer, subagents | Опциональная методика исполнения; не закрывает AIDD gates |
 
 Superpowers описан отдельно: [[Superpowers Overlay]].
 
@@ -83,7 +83,7 @@ QA_PASS              → flutter-add-integration-test, dart-collect-coverage (Cr
 
 ## Superpowers
 
-Superpowers — это не Flutter/Dart skill-pack, а Claude Code plugin с общей методикой разработки. Он может помогать в brainstorming, TDD, systematic debugging, `/execute-plan`, pre-review и skill authoring. AIDD gates win over external skills and plugins: Superpowers не заменяет PRD, plan, reviewer, security-reviewer или QA.
+Superpowers — это не Flutter/Dart skill-pack, а Claude Code plugin с общей методикой разработки. Он может помогать в brainstorming, TDD, `/execute-plan`, pre-review и skill authoring. Systematic failure diagnosis принадлежит `/aidd-diagnose-failure`; Superpowers для него не требуется. AIDD gates win over external skills and plugins: Superpowers не заменяет PRD, plan, reviewer, security-reviewer или QA.
 
 ## DDD And Security Review Aids
 

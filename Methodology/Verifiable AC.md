@@ -1,6 +1,6 @@
 # Verifiable AC
 
-Workflow Minor: 3.3
+Workflow Minor: 3.4
 Owner: methodology
 
 Каждый критерий приёмки в PRD поставляется как `test:` / `command:` / `manual:` shell-проверяемый предикат. Ниже зафиксированы устойчивые формы AC, выкристаллизовавшиеся из практики spec-critic.

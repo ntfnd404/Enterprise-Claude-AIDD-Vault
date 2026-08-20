@@ -14,6 +14,18 @@ failures=0
 warnings=0
 quick="${1:-}"
 
+tier=$(
+  awk -F '`' '/^- Tier: `[^`]+`$/ { print $2; exit }' CLAUDE.md 2>/dev/null \
+    || true
+)
+case "${tier}" in
+  lite|standard|enterprise) ;;
+  *)
+    echo "FAIL: CLAUDE.md must declare Tier as lite, standard, or enterprise"
+    exit 1
+    ;;
+esac
+
 fail() {
   echo "FAIL: $1"
   failures=$((failures + 1))
@@ -81,7 +93,7 @@ shared_docs=(
   "docs/archive/README.md"
 )
 
-hook_files=(
+base_hook_files=(
   ".claude/settings.json"
   ".claude/bin/aidd_validate.sh"
   ".claude/hooks/instructions-loaded.sh"
@@ -90,17 +102,13 @@ hook_files=(
   ".claude/hooks/post-compact-reinject.sh"
   ".claude/hooks/config-change-guard.sh"
   ".claude/hooks/file-changed-guard.sh"
-  ".claude/hooks/subagent-lifecycle.sh"
-  ".claude/hooks/team-task-lifecycle.sh"
 )
 
-agent_files=(
+base_agent_files=(
   ".claude/agents/analyst.md"
-  ".claude/agents/researcher.md"
   ".claude/agents/planner.md"
   ".claude/agents/implementer.md"
   ".claude/agents/reviewer.md"
-  ".claude/agents/security-reviewer.md"
   ".claude/agents/qa.md"
 )
 
@@ -123,16 +131,35 @@ extra_template_files=(
   "docs/project/templates/adr.md"
 )
 
-workflow_skill_names=(
+base_workflow_skill_names=(
   "aidd-new-ticket"
-  "aidd-new-phase"
   "aidd-start-phase"
+  "aidd-diagnose-failure"
   "aidd-run-checks"
-  "aidd-complete-phase"
-  "aidd-validate"
   "aidd-ship-feature"
   "aidd-init"
 )
+
+hook_files=("${base_hook_files[@]}")
+agent_files=("${base_agent_files[@]}")
+workflow_skill_names=("${base_workflow_skill_names[@]}")
+
+if [[ "${tier}" != "lite" ]]; then
+  hook_files+=(".claude/hooks/subagent-lifecycle.sh")
+  agent_files+=(
+    ".claude/agents/researcher.md"
+    ".claude/agents/security-reviewer.md"
+  )
+  workflow_skill_names+=(
+    "aidd-new-phase"
+    "aidd-complete-phase"
+    "aidd-validate"
+  )
+fi
+
+if [[ "${tier}" == "enterprise" ]]; then
+  hook_files+=(".claude/hooks/team-task-lifecycle.sh")
+fi
 
 for path in \
   "${shared_docs[@]}" \
@@ -290,12 +317,15 @@ hook_events=(
   "PostCompact"
   "FileChanged"
   "ConfigChange"
-  "SubagentStart"
-  "SubagentStop"
-  "TaskCreated"
-  "TaskCompleted"
-  "TeammateIdle"
 )
+
+if [[ "${tier}" != "lite" ]]; then
+  hook_events+=("SubagentStart" "SubagentStop")
+fi
+
+if [[ "${tier}" == "enterprise" ]]; then
+  hook_events+=("TaskCreated" "TaskCompleted" "TeammateIdle")
+fi
 
 for event_name in "${hook_events[@]}"; do
   require_pattern ".claude/settings.json" "\"${event_name}\""

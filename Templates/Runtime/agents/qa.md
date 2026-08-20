@@ -37,7 +37,11 @@ You verify the phase implementation against the PRD scenarios and produce eviden
 - Write evidence first
 - Reference specific files and behaviors
 - Do not redesign architecture
+- Describe the observed symptom and reproduction evidence. Do not present an
+  unverified explanation as the root cause.
 - Verdict: `QA_PASS` or `QA_FAIL`
+- On `QA_FAIL`, route to `/aidd-diagnose-failure` before a new implementation
+  batch is proposed.
 
 ## Gate
 

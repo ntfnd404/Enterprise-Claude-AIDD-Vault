@@ -56,7 +56,9 @@ Finalizes a phase after all implementation batches are done and routes the artif
 **Professional lane:**
 1. Spawn `reviewer` agent → produces `docs/<TICKET>/review/<TICKET>-phase-N-review.md`
 2. If `REVIEW_OK` → spawn `qa` agent → produces `docs/<TICKET>/qa/<TICKET>-phase-N-qa.md`
-3. If `QA_FAIL` → report issues, return to implementation
+3. If `QA_FAIL` → run `/aidd-diagnose-failure N`; after diagnosis, route to an
+   owner-approved fix batch or back to research/planning when an assumption
+   changed
 
 **Critical lane:**
 1. Spawn `reviewer` agent → produces `docs/<TICKET>/review/<TICKET>-phase-N-review.md`
